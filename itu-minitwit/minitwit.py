@@ -19,9 +19,12 @@ from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 
+import os
+dir = os.path.dirname(__file__)
+filename = os.path.join(dir, '/relative/path/to/file/you/want')
 
 # configuration
-DATABASE = '/tmp/minitwit.db'
+DATABASE = f'{dir}/../minitwit.db'
 PER_PAGE = 30
 DEBUG = True
 SECRET_KEY = 'development key'
@@ -32,6 +35,7 @@ app = Flask(__name__)
 
 def connect_db():
     """Returns a new connection to the database."""
+    print(DATABASE)
     return sqlite3.connect(DATABASE)
 
 
