@@ -19,3 +19,47 @@ class MessagesView(APIView):
         return JsonResponse({
             'success': True
             })
+
+class UserMessagesView(APIView):
+    
+    def get(self, request, username):
+        logger.debug('entered get request')
+        return JsonResponse({
+            'success': True
+            })
+    
+    def post(self, request, username):
+        logger.debug('entered post request')
+        return JsonResponse({
+            'success': True
+            })
+
+class RegistrationView(APIView):
+    
+    def post(self, request):
+        logger.debug('entered post request')
+        return JsonResponse({
+            'success': True
+            })
+
+class LatestView(APIView):
+    
+    def get(self, request):
+        logger.debug('entered get request')
+        return JsonResponse({
+            'success': True
+            })
+
+class UserFollowersView(APIView):
+    
+    def get(self, request, username):
+        logger.debug('entered get request')
+        return JsonResponse({
+            'success': True
+            })
+    
+    def post(self, request, username):
+        logger.debug('entered post request')
+        return JsonResponse({
+            'success': True
+            })
