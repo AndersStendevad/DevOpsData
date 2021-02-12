@@ -1,0 +1,4 @@
+flask
+werkzeug
+django
+psycopg2

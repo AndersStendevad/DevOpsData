@@ -1,5 +1,5 @@
 from django.urls import include, path
-from .minitwit import public_timeline, user_timeline, login, register
+from twitter.views import public_timeline, user_timeline, login, register
 
 
 urlpatterns = [
