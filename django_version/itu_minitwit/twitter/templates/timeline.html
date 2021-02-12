@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}
+  {% if request.endpoint == 'public_timeline' %}
+    Public Timeline
+  {% elif request.endpoint == 'user_timeline' %}
+    {{ profile_user.username }}'s Timeline
+  {% else %}
+    My Timeline
+  {% endif %}
+{% endblock %}
+{% block body %}
+  <ul class=messages>
+  {% for message in messages %}
+      <li><img src="gravatar"><p>
+      <strong><a href="{% url 'user_timeline' message.username %}">{{ message.username }}</a></strong>
+      {{ message.text }}
+      <small>&mdash; {{ message.pub_date}}</small>
+  {% endfor %}
+  </ul>
+{% endblock %}
