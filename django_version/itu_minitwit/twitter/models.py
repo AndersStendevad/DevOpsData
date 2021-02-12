@@ -3,10 +3,10 @@ from django.db import models
 class User(models.Model):
     username = models.CharField('user', max_length=70)
     email = models.CharField('email',max_length=70)
-    pwd_hash = models.CharField('pwd_hash'max_length=70)
+    pwd_hash = models.CharField('pwd_hash', max_length=150)
 
     def __str__(self):
-        return f"username: {self.username}, email: {self.email}, password hash: retracted"
+        return f"username: {self.username}, email: {self.email}"
 
 class Follower(models.Model):
     source_user = models.ForeignKey('who_id',User, on_delete=models.CASCADE)
