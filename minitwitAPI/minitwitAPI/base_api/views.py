@@ -6,6 +6,8 @@ from django.http import JsonResponse, HttpResponse
 
 from rest_framework.views import APIView
 
+from .models import User, Follower, Message
+
 logger = logging.getLogger(__name__) # basic logger for debugging
 
 def index(request): # just to have a basic view
@@ -16,8 +18,10 @@ class MessagesView(APIView):
     
     def get(self, request):
         logger.debug('entered get request')
+        messages = Message.objects.all()[0].author.__str__()
         return JsonResponse({
-            'success': True
+            'success': True,
+            'messages': messages
             })
 
 class UserMessagesView(APIView):
