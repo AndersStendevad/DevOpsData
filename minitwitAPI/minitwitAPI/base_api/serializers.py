@@ -15,6 +15,12 @@ class FollowSerializer(serializers.HyperlinkedModelSerializer):
         model = Follower
         fields = ('target_user', )
 
+    def to_representation(self, instance):
+        data = super(FollowSerializer, self).to_representation(instance)
+        target_user = data.pop('target_user')
+        return target_user["user"]
+
+
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
 
     author = UserSerializer()
