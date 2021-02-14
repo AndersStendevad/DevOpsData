@@ -86,8 +86,7 @@ class UserFollowersView(APIView):
         if param := request.query_params.get('no'):
             max_results = int(param)
         if user := User.objects.filter(username = username).first():
-            followers = Follower.objects \
-                .filter(source_user=user) \
+            followers = Follower.objects.filter(source_user=user)
             serializer = FollowSerializer(followers, many=True)
             return Response(serializer.data)
         else:
