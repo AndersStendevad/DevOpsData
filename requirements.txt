@@ -2,3 +2,6 @@ flask
 werkzeug
 django
 psycopg2
+pytest
+djangorestframework
+djangorestframework-jsonapi
