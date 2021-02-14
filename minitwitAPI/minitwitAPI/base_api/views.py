@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from .models import User, Follower, Message
 from .serializers import MessageSerializer, UserSerializer, FollowSerializer
 
+from werkzeug.security import check_password_hash, generate_password_hash
+
 logger = logging.getLogger(__name__) # basic logger for debugging
 
 def index(request): # just to have a basic view
@@ -69,10 +71,30 @@ class UserMessagesView(APIView):
 class RegistrationView(APIView):
     
     def post(self, request):
-        logger.debug('entered post request')
-        return JsonResponse({
-            'success': True
-            })
+
+        request_data = json.loads(request.body)
+
+        # Check data for correctness
+        error = None
+        if not request_data["username"]:
+            error = "You have to enter a username"
+        elif not request_data["email"] or "@" not in request_data["email"]:
+            error = "You have to enter a valid email address"
+        elif not request_data["pwd"]:
+            error = "You have to enter a password"
+        elif getUserObject(request_data["username"]):
+            error = "The username is already taken"
+
+        if error:
+            return JsonResponse({'success': 400, 'error_msg': error}, status=400)
+        else:
+            new_user = User.objects.create( \
+                    username=request_data['username'], \
+                    email=request_data['email'], \
+                    pwd_hash=generate_password_hash(request_data['pwd']))
+
+            return HttpResponse(status=204)
+
 
 class LatestView(APIView):
     
