@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__) # basic logger for debugging
 def index(request): # just to have a basic view
     return HttpResponse("Hi everyone")
 
+def getUserObject(username):
+    return User.objects.filter(username = username).first()
+
 class MessagesView(APIView):
     
     def get(self, request):
@@ -38,7 +41,7 @@ class UserMessagesView(APIView):
         if param := request.query_params.get('no'):
             max_results = int(param)
 
-        if user := User.objects.filter(username = username).first():
+        if user := getUserObject(username):
 
             messages = Message.objects \
                 .filter(author=user) \
@@ -54,7 +57,7 @@ class UserMessagesView(APIView):
     
     def post(self, request, username):
 
-        if user := User.objects.filter(username = username).first():
+        if user := getUserObject(username):
 
             request_data = json.loads(request.body)
             new_msg = Message.objects.create(author=user, content=request_data['content'])
@@ -85,7 +88,7 @@ class UserFollowersView(APIView):
         max_results = 100
         if param := request.query_params.get('no'):
             max_results = int(param)
-        if user := User.objects.filter(username = username).first():
+        if user := getUserObject(username):
             followers = Follower.objects.filter(source_user=user)
             serializer = FollowSerializer(followers, many=True)
             return Response(serializer.data)
@@ -96,14 +99,14 @@ class UserFollowersView(APIView):
         if user := User.objects.filter(username = username).first():
             request_data = json.loads(request.body)
             if 'follow' in request_data.keys():
-                if User.objects.filter(username = request_data['follow']).first():
-                    new_Follower = Follower.objects.create(source_user = user, target_user = User.objects.get(username = request_data['follow']))
+                if follow := User.objects.filter(username = request_data['follow']).first():
+                    new_Follower = Follower.objects.create(source_user = user, target_user = follow)
                     return HttpResponse(status=204)
                 else:
                     return HttpResponse(status=404)
             elif 'unfollow' in request_data.keys():
-                if User.objects.filter(username = request_data['unfollow']).first():
-                    delete_follower = Follower.objects.filter(source_user = user, target_user = User.objects.get(username = request_data['unfollow'])).delete()
+                if unfollow := User.objects.filter(username = request_data['unfollow']).first():
+                    delete_follower = Follower.objects.filter(source_user = user, target_user = unfollow).delete()
                     return HttpResponse(status=204)
                 else:
                     return HttpResponse(status=404)
