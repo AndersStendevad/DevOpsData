@@ -53,10 +53,15 @@ class UserMessagesView(APIView):
 
     
     def post(self, request, username):
-        logger.debug('entered post request')
-        return JsonResponse({
-            'success': True
-            })
+
+        if user := User.objects.filter(username = username).first():
+
+            request_data = json.loads(request.body)
+            new_msg = Message.objects.create(author=user, content=request_data['content'])
+            return HttpResponse(status=204)
+
+        else:
+            return HttpResponse(status=404)
 
 class RegistrationView(APIView):
     
