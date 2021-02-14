@@ -85,20 +85,15 @@ class UserFollowersView(APIView):
         max_results = 100
         if param := request.query_params.get('no'):
             max_results = int(param)
-
         if user := User.objects.filter(username = username).first():
-
             followers = Follower.objects \
                 .filter(source_user=user) \
-
             serializer = FollowSerializer(followers, many=True)
             return Response(serializer.data)
-
         else:
             return HttpResponse(status=404)
 
     def post(self, request, username):
-
         if user := User.objects.filter(username = username).first():
             request_data = json.loads(request.body)
             if 'follow' in request_data.keys():
