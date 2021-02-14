@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import User, Follower, Message
-from .serializers import MessageSerializer, UserSerializer
+from .serializers import MessageSerializer, UserSerializer, FollowSerializer
 
 logger = logging.getLogger(__name__) # basic logger for debugging
 
@@ -77,11 +77,21 @@ class LatestView(APIView):
 class UserFollowersView(APIView):
     
     def get(self, request, username):
-        logger.debug('entered get request')
-        return JsonResponse({
-            'success': True
-            })
-    
+        max_results = 100
+        if param := request.query_params.get('no'):
+            max_results = int(param)
+
+        if user := User.objects.filter(username = username).first():
+
+            followers = Follower.objects \
+                .filter(source_user=user) \
+
+            serializer = FollowSerializer(followers, many=True)
+            return Response(serializer.data)
+
+        else:
+            return HttpResponse(status=404)
+
     def post(self, request, username):
         logger.debug('entered post request')
         return JsonResponse({

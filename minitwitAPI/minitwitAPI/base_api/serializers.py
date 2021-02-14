@@ -1,11 +1,19 @@
 from rest_framework_json_api import serializers
-from .models import Message, User
+from .models import Message, User, Follower
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.CharField(source='username')
     class Meta:
         model = User
         fields = ('user', )
+
+class FollowSerializer(serializers.HyperlinkedModelSerializer):
+
+    target_user = UserSerializer()
+
+    class Meta:
+        model = Follower
+        fields = ('target_user', )
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
 
