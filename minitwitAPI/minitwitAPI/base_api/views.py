@@ -98,7 +98,23 @@ class UserFollowersView(APIView):
             return HttpResponse(status=404)
 
     def post(self, request, username):
-        logger.debug('entered post request')
-        return JsonResponse({
-            'success': True
-            })
+
+        if user := User.objects.filter(username = username).first():
+            request_data = json.loads(request.body)
+            if 'follow' in request_data.keys():
+                if User.objects.filter(username = request_data['follow']).first():
+                    new_Follower = Follower.objects.create(source_user = user, target_user = User.objects.get(username = request_data['follow']))
+                    return HttpResponse(status=204)
+                else:
+                    return HttpResponse(status=404)
+            elif 'unfollow' in request_data.keys():
+                if User.objects.filter(username = request_data['unfollow']).first():
+                    delete_follower = Follower.objects.filter(source_user = user, target_user = User.objects.get(username = request_data['unfollow'])).delete()
+                    return HttpResponse(status=204)
+                else:
+                    return HttpResponse(status=404)
+            else:
+                return HttpResponse(status=404)
+        else:
+            return HttpResponse(status=404)
+
