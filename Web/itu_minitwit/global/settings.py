@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'global.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'minitwitter', 
-        'USER': 'postgres', 
-        'PASSWORD': 'postgres',
+        'NAME': 'database_minitwit', 
+        'USER': 'superuser', 
+        'PASSWORD': 'su',
         'HOST': 'localhost', 
         'PORT': '5555',
     }

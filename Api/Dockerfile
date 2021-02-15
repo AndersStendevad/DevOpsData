@@ -1,12 +1,9 @@
 FROM python:3.8.5-slim-buster
 
-# copy all the files from here into image /src/
-COPY /itu-minitwit $HOME/itu-minitwit
+COPY /minitwitAPI $HOME/minitwitAPI
 
-ADD minitwit.db $HOME/
+WORKDIR $HOME/minitwitAPI
 
-RUN pip3 install -r /itu-minitwit/requirements.txt
+RUN pip3 install -r requirements.txt
 
-EXPOSE 5000
-WORKDIR $HOME/src/
-CMD ["python3", "/itu-minitwit/minitwit.py"]
+CMD ["python3", "manage.py", "runserver", "8080"]
