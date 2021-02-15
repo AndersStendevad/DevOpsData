@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'base_api.apps.BaseApiConfig',
+    'minitwit.apps.MinitwitConfig',
 ]
 
 MIDDLEWARE = [
@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'minitwitAPI.urls'
+ROOT_URLCONF = 'global.urls'
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'minitwitAPI.wsgi.application'
+WSGI_APPLICATION = 'global.wsgi.application'
 
 
 # Database

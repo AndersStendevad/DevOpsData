@@ -1,5 +1,5 @@
 """
-WSGI config for itu_minitwit project.
+WSGI config for minitwitAPI project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'itu_minitwit.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'global.settings')
 
 application = get_wsgi_application()
