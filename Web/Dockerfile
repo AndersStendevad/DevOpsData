@@ -6,4 +6,6 @@ WORKDIR $HOME/itu_minitwit
 
 RUN pip3 install -r requirements.txt
 
+CMD ["python3", "manage.py", "wait_for_db"]
 CMD ["python3", "manage.py", "runserver", "8000"]
+
