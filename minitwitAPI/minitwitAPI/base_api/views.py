@@ -7,6 +7,7 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from .models import User, Follower, Message
 from .serializers import MessageSerializer, UserSerializer, FollowSerializer
@@ -15,14 +16,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 logger = logging.getLogger(__name__) # basic logger for debugging
 
-# latest received 'latest' value
 LATEST = 0
-
-def not_req_from_simulator(self, request):
-    from_simulator = request.META['HTTP_AUTHORIZATION']
-    if from_simulator != "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh":
-        error = "You are not authorized to use this resource!"
-        return JsonResponse({'status': 403, 'error_msg': error}), 403
 
 def getUserObject(username):
     return User.objects.filter(username = username).first()
@@ -151,4 +145,3 @@ class UserFollowersView(APIView):
                 return HttpResponse(status=404)
         else:
             return HttpResponse(status=404)
-
