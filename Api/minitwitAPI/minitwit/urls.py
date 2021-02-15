@@ -7,5 +7,6 @@ urlpatterns = [
     path('msgs/', views.MessagesView.as_view()),
     path('fllws/<username>', views.UserFollowersView.as_view()),
     path('register/', views.RegistrationView.as_view()),
+    path('register', views.RegistrationView.as_view()),
     path('latest/', views.LatestView),
 ]
