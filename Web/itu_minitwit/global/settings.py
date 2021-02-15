@@ -74,16 +74,16 @@ WSGI_APPLICATION = 'global.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
- DATABASES = {
-     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'database_minitwit',
-        'USER': 'superuser',
-        'PASSWORD': 'su',
-        'HOST': 'localhost',
-        'PORT': '5555',
-     }
+DATABASES = {
+ 'default': {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'database_minitwit',
+    'USER': 'superuser',
+    'PASSWORD': 'su',
+    'HOST': 'localhost',
+    'PORT': '5555',
  }
+}
 
 
 # Password validation
