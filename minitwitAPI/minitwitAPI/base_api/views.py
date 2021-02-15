@@ -7,7 +7,7 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 from .models import User, Follower, Message
 from .serializers import MessageSerializer, UserSerializer, FollowSerializer
@@ -32,6 +32,7 @@ def LatestView(self):
     return JsonResponse({'latest': LATEST})
 
 class MessagesView(APIView):
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         update_latest(self, request)
@@ -48,6 +49,7 @@ class MessagesView(APIView):
         return Response(serializer.data)
 
 class UserMessagesView(APIView):
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, username):
         update_latest(self, request)
@@ -110,6 +112,7 @@ class RegistrationView(APIView):
             return HttpResponse(status=204)
 
 class UserFollowersView(APIView):
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, username):
         update_latest(self, request)
