@@ -16,6 +16,12 @@ logger = logging.getLogger(__name__) # basic logger for debugging
 
 LATEST = 0
 
+def not_req_from_simulator(request):
+    from_simulator = request.headers.get('Authorization')
+    if from_simulator != "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh":
+         error = "You are not authorized to use this resource!"
+         return JsonResponse({'status': 403, 'error_msg': error}, status=403)
+
 def getUserObject(username):
     return User.objects.filter(username = username).first()
 
@@ -33,6 +39,8 @@ class MessagesView(APIView):
    
     def get(self, request):
         update_latest(self, request)
+        if auth := not_req_from_simulator(request):
+            return auth
 
         max_results = 100
         if param := request.query_params.get('no'):
@@ -49,6 +57,8 @@ class UserMessagesView(APIView):
     
     def get(self, request, username):
         update_latest(self, request)
+        if auth := not_req_from_simulator(request):
+            return auth
 
         max_results = 100
         if param := request.query_params.get('no'):
@@ -70,6 +80,8 @@ class UserMessagesView(APIView):
     
     def post(self, request, username):
         update_latest(self, request)
+        if auth := not_req_from_simulator(request):
+            return auth
 
         if user := getUserObject(username):
 
@@ -111,6 +123,8 @@ class UserFollowersView(APIView):
     
     def get(self, request, username):
         update_latest(self, request)
+        if auth := not_req_from_simulator(request):
+            return auth
 
         max_results = 100
         if param := request.query_params.get('no'):
