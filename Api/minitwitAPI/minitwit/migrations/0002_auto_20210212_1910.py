@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base_api', '0001_initial'),
+        ('minitwit', '0001_initial'),
     ]
 
     operations = [

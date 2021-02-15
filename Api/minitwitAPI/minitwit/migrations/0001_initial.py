@@ -28,15 +28,15 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(verbose_name='text')),
                 ('publication_date', models.DateField(verbose_name='pub_date')),
                 ('number_of_flags', models.IntegerField(default=0, verbose_name='flagged')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='author_id', to='base_api.user')),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='author_id', to='minitwit.user')),
             ],
         ),
         migrations.CreateModel(
             name='Follower',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='who_id', to='base_api.user')),
-                ('target_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='whom_id', to='base_api.user')),
+                ('source_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='who_id', to='minitwit.user')),
+                ('target_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='whom_id', to='minitwit.user')),
             ],
         ),
     ]
