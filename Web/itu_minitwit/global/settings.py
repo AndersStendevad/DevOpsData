@@ -80,8 +80,8 @@ DATABASES = {
     'NAME': 'database_minitwit',
     'USER': 'superuser',
     'PASSWORD': 'su',
-    'HOST': 'localhost',
-    'PORT': '5555',
+    'HOST': 'database',
+    'PORT': '5432',
  }
 }
 
