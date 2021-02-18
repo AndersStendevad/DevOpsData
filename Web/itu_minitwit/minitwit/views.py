@@ -8,6 +8,8 @@ from hashlib import md5
 from .models import Message, User
 from .forms import SignUpForm, SignInForm
 
+from werkzeug.security import check_password_hash, generate_password_hash
+
 PER_PAGE = 20
 
 def format_datetime(timestamp):
@@ -64,7 +66,7 @@ def login(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, pwd_hash=raw_password)
+            user = authenticate(username=username, pwd_hash=generate_password_hash(raw_password))
             login(request, user)
             return redirect('user_timeline', username)
     else:
@@ -77,10 +79,10 @@ def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
             username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
-            user = User(username=username, password=raw_password)
+            user = User(username=username, email=email, pwd_hash=generate_password_hash(raw_password))
             user.save()
             #TODO:redirect to signin instead
             return redirect('public_timeline')
