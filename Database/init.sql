@@ -1,0 +1,1 @@
+CREATE user superuser WITH PASSWORD 'su' CREATEDB;
