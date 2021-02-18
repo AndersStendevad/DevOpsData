@@ -2,13 +2,13 @@ import os
 import sys
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import auth
-
 from hashlib import md5
 from .models import Message, User
+from .forms import SignUpForm, SignInForm
 
-PER_PAGE = 1
+PER_PAGE = 20
 
 def format_datetime(timestamp):
     """Format a timestamp for display."""
@@ -20,76 +20,70 @@ def gravatar_url(email, size=80):
     return 'http://www.gravatar.com/avatar/%s?d=identicon&s=%d' % \
         (md5(email.strip().lower().encode('utf-8')).hexdigest(), size)
 
-def public_timeline(request):
+def get_messages(message_objs):
     messages = []
-    for i in range(PER_PAGE):
-        m = Message.objects.get(pk = PER_PAGE)
+    for m in message_objs:
         messages.append({"username": m.author.username,
                          "text": m.content,
                          "pub_date": m.publication_date})
+    return messages
+
+def public_timeline(request):
+    message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
+    messages = get_messages(message_objs)
 
     return render(request, 'timeline.html', {'messages': messages})
 
 def user_timeline(request, username):
     """Display's a users tweets."""
 
-    #TODO: check if user in db using param username
-    profile_user = True
-    #TODO: check if user is followed
-    followed = False
+    if not User.objects.filter(username=username).exists():
+        return HttpResponse(404)
 
-    #TODO: Can this be sped up?
-    messages = []
-    for i in range(PER_PAGE):
-        m = Message.objects.get(pk = i)
-        if m.author.username == username:
-            messages.append({"username": m.author.username,
-                             "text": m.content,
-                             "pub_date": m.publication_date})
+    user = User.objects.get(username=username)
+
+    #TODO: this only works if we use the contrib.auth.models.User
+    # as user model, but then the db fucks up...
+    #if user.is_authenticated:
+        #user_logged_in = True
+        #TODO: check if user is followed
+        #followed = False
+
+    message_objs= Message.objects.order_by("-publication_date")[:PER_PAGE]
+    messages = get_messages(message_objs)
     #TODO: do the stupid gravatar
-    #gravatar = gravatar_url(messages['email'], 45)
-    context = {'messages': messages,
-                #"followed": followed,
-                #"profile_user": profile_user,
-                #'gravatar': gavatar
-    }
-
-    return render(request, 'timeline.html', context)
+    return render(request, 'timeline.html', {'messages': messages, 'user_logged_in': False})
 # Create your views here.
 
 def login(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    user = auth.authenticate(request, username=username, password=password)
-    print("this is user", user)
-    if user is not None:
-        res = auth.login(request, user)
-        print("this is result", res)
-        #TODO: redirect to user's timeline
-    return render(request, 'login.html')
+    if request.method == 'POST':
+        form = SignInForm(request.POST)
+        print(form)
+        print(form.is_valid())
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, pwd_hash=raw_password)
+            login(request, user)
+            return redirect('user_timeline', username)
+    else:
+        form = SignInForm()
+    return render(request, 'login.html', {'form': form})
 
 
 
 def register(request):
-    #TODO: create user in db
-    username = request.POST.get('username','')
-    email = request.POST.get('email','')
-    password = request.POST.get('password','')
-    password2 = request.POST.get('password2','')
-    if not username:
-        error = 'You have to enter a username'
-    elif not email or '@' not in email:
-        error = 'You have to enter a valid email address'
-    elif not password:
-        error = 'You have to enter a password'
-    elif password != password2:
-        error = 'The two passwords do not match'
-    #TODO: check if username is in the db
-    elif User.objects.filter(username=username).exists():
-        error = 'The username is already taken'
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = User(username=username, password=raw_password)
+            user.save()
+            #TODO:redirect to signin instead
+            return redirect('public_timeline')
     else:
-        #u = User(username, email, password) # TODO: breaks because it expects an id
-        u = auth.models.User.objects.create_user(username, email, password) #What is the difference between
-        print("User created, pk:", u.pk)
-        u.save()
-    return render(request, 'register.html')
+        form = SignUpForm()
+    return render(request, 'register.html', {'form': form})

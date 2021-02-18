@@ -1,5 +1,5 @@
 from django.db import models
-
+#from django.contrib import auth
 # Create your models here.
 class User(models.Model):
     username = models.CharField('user', max_length=70)
@@ -9,8 +9,15 @@ class User(models.Model):
     class Meta:
         db_table = 'twiiter_users'
 
+
     def __str__(self):
         return f"username: {self.username}, email: {self.email}"
+
+#class User(auth.models.User):
+#    class Meta:
+#        db_table = 'twiiter_users'
+#    def __str__(self):
+#        return f"username: {self.username}, email: {self.email}"
 
 class Follower(models.Model):
     source_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='who_id')
