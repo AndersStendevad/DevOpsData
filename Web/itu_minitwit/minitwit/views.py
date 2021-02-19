@@ -4,7 +4,10 @@ import sys
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import auth
+from django.contrib.auth import authenticate, login, logout
+
 from hashlib import md5
+
 from .models import Message, Follower, Profile
 from .forms import SignUpForm, SignInForm
 
@@ -68,20 +71,21 @@ def user_timeline(request, username):
 
 def login(request):
     if request.method == 'POST':
-        form = SignInForm(request.POST)
-        print(form)
+        form = SignInForm(data=request.POST)
         print(form.is_valid())
         if form.is_valid():
             print('yeey')
             form.save()
             username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
+            raw_password = form.cleaned_data.get('password')
             user = authenticate(username=username, pwd_hash=generate_password_hash(raw_password))
             login(request, user)
-            return redirect('timeline', username)
+            return redirect('minitwit/timeline', username)
+        else:
+            return render(request, 'minitwit/login.html', {'form':form })
     else:
-        form = SignInForm()
-    return render(request, 'minitwit/login.html', {'form': form})
+            form = SignInForm()
+            return render(request, 'minitwit/login.html', {'form': form})
 
 
 
