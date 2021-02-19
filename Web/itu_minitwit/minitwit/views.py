@@ -34,7 +34,7 @@ def public_timeline(request):
     message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
 
-    return render(request, 'timeline.html', {'messages': messages})
+    return render(request, 'minitwit/timeline.html', {'messages': messages})
 
 def timeline(request, username):
     me = ProfileUser.objects.get(username=username)
@@ -42,7 +42,7 @@ def timeline(request, username):
     me_follows_user = [i.target_user for i in me_follows] + [me]
     message_objs = Message.objects.filter(author_id__in = me_follows_user)
     messages = get_messages(message_objs)
-    return render(request, 'timeline.html', {'messages': messages})
+    return render(request, 'minitwit/timeline.html', {'messages': messages})
 
 def user_timeline(request, username):
     """Display's a users tweets."""
@@ -62,7 +62,7 @@ def user_timeline(request, username):
     message_objs= Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
     #TODO: do the stupid gravatar
-    return render(request, 'timeline.html', {'messages': messages, 'user_logged_in': False})
+    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': False})
 # Create your views here.
 
 
@@ -81,7 +81,7 @@ def login(request):
             return redirect('timeline', username)
     else:
         form = SignInForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'minitwit/login.html', {'form': form})
 
 
 
@@ -99,4 +99,4 @@ def register(request):
             return redirect('public_timeline')
     else:
         form = SignUpForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'minitwit/register.html', {'form': form})
