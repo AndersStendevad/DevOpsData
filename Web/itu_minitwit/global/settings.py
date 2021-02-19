@@ -44,7 +44,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'global.wsgi.application'
 DATABASES = {
  'default': {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'database_minitwit',
-    'USER': 'superuser',
-    'PASSWORD': 'su',
-    'HOST': 'database',
-    'PORT': '5432',
+    'NAME': 'minitwitter',
+    'USER': 'postgres',
+    'PASSWORD': 'postgres',
+    'HOST': 'localhost',
+    'PORT': '6666',
  }
 }
 

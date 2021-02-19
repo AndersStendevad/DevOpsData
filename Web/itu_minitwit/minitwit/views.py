@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from hashlib import md5
-from .models import Message, User
+from .models import Message, Follower, ProfileUser
 from .forms import SignUpForm, SignInForm
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -36,15 +36,23 @@ def public_timeline(request):
 
     return render(request, 'timeline.html', {'messages': messages})
 
+def timeline(request, username):
+    me = ProfileUser.objects.get(username=username)
+    me_follows = Follower.objects.filter(source_user=me)
+    me_follows_user = [i.target_user for i in me_follows] + [me]
+    message_objs = Message.objects.filter(author_id__in = me_follows_user)
+    messages = get_messages(message_objs)
+    return render(request, 'timeline.html', {'messages': messages})
+
 def user_timeline(request, username):
     """Display's a users tweets."""
 
-    if not User.objects.filter(username=username).exists():
+    if not ProfileUser.objects.filter(username=username).exists():
         return HttpResponse(404)
 
-    user = User.objects.get(username=username)
+    user = ProfileUser.objects.get(username=username)
 
-    #TODO: this only works if we use the contrib.auth.models.User
+    #TODO: this only works if we use the contrib.auth.models.ProfileUser
     # as user model, but then the db fucks up...
     #if user.is_authenticated:
         #user_logged_in = True
@@ -57,18 +65,20 @@ def user_timeline(request, username):
     return render(request, 'timeline.html', {'messages': messages, 'user_logged_in': False})
 # Create your views here.
 
+
 def login(request):
     if request.method == 'POST':
         form = SignInForm(request.POST)
         print(form)
         print(form.is_valid())
         if form.is_valid():
+            print('yeey')
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, pwd_hash=generate_password_hash(raw_password))
             login(request, user)
-            return redirect('user_timeline', username)
+            return redirect('timeline', username)
     else:
         form = SignInForm()
     return render(request, 'login.html', {'form': form})
@@ -79,10 +89,11 @@ def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
+            #form.save()
             username = form.cleaned_data.get('username')
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
-            user = User(username=username, email=email, pwd_hash=generate_password_hash(raw_password))
+            user = ProfileUser(username=username, email=email, password=generate_password_hash(raw_password))
             user.save()
             #TODO:redirect to signin instead
             return redirect('public_timeline')
