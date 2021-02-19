@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import ProfileUser
+from .models import Profile
 
 
 class SignUpForm(UserCreationForm):
@@ -10,12 +10,12 @@ class SignUpForm(UserCreationForm):
     password2 = forms.CharField(max_length=70, widget=forms.PasswordInput)
 
     class Meta:
-        model = ProfileUser
+        model = Profile
         fields = ('username', 'email', 'password1', 'password2', )
 
 
 class SignInForm(AuthenticationForm):
 
     class Meta:
-        model = ProfileUser
+        model = Profile
         fields = ('username', 'password')

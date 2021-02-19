@@ -1,15 +1,13 @@
 from django.db import models
-from django.contrib import auth
-# Create your models here.
+from django.contrib.auth.models import AbstractUser
 
-class ProfileUser(auth.models.User):
+class Profile(AbstractUser):
     class Meta:
-        db_table = 'profile_users'
-
+        db_table = 'profiles'
 
 class Follower(models.Model):
-    source_user = models.ForeignKey(ProfileUser, on_delete=models.CASCADE, related_name='who_id')
-    target_user = models.ForeignKey(ProfileUser, on_delete=models.CASCADE, related_name='whom_id')
+    source_user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='who_id')
+    target_user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='whom_id')
 
     class Meta:
         db_table = 'followers'
@@ -18,7 +16,7 @@ class Follower(models.Model):
         return f"follow from user id: {self.source_user} to user id: {self.target_user}"
 
 class Message(models.Model):
-    author = models.ForeignKey(ProfileUser, on_delete=models.CASCADE, related_name='author_id')
+    author = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='author_id')
     content = models.TextField('text')
     publication_date = models.DateField('pub_date')
     number_of_flags = models.IntegerField('flagged', default = 0)

@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from hashlib import md5
-from .models import Message, Follower, ProfileUser
+from .models import Message, Follower, Profile
 from .forms import SignUpForm, SignInForm
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -37,7 +37,7 @@ def public_timeline(request):
     return render(request, 'minitwit/timeline.html', {'messages': messages})
 
 def timeline(request, username):
-    me = ProfileUser.objects.get(username=username)
+    me = Profile.objects.get(username=username)
     me_follows = Follower.objects.filter(source_user=me)
     me_follows_user = [i.target_user for i in me_follows] + [me]
     message_objs = Message.objects.filter(author_id__in = me_follows_user)
@@ -47,12 +47,12 @@ def timeline(request, username):
 def user_timeline(request, username):
     """Display's a users tweets."""
 
-    if not ProfileUser.objects.filter(username=username).exists():
+    if not Profile.objects.filter(username=username).exists():
         return HttpResponse(404)
 
-    user = ProfileUser.objects.get(username=username)
+    user = Profile.objects.get(username=username)
 
-    #TODO: this only works if we use the contrib.auth.models.ProfileUser
+    #TODO: this only works if we use the contrib.auth.models.Profile
     # as user model, but then the db fucks up...
     #if user.is_authenticated:
         #user_logged_in = True
@@ -93,7 +93,7 @@ def register(request):
             username = form.cleaned_data.get('username')
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
-            user = ProfileUser(username=username, email=email, password=generate_password_hash(raw_password))
+            user = Profile(username=username, email=email, password=generate_password_hash(raw_password))
             user.save()
             #TODO:redirect to signin instead
             return redirect('public_timeline')
