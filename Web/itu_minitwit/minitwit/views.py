@@ -35,7 +35,7 @@ def public_timeline(request):
     message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
 
-    return render(request, 'minitwit/timeline.html', {'messages': messages})
+    return render(request, 'minitwit/timeline.html', {'gravatar': gravatar_url(request.user.email), 'messages': messages})
 
 def timeline(request, username):
     me = Profile.objects.get(username=username)
@@ -67,7 +67,7 @@ def user_timeline(request, username):
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('/timeline', username)
+        return redirect(f'/{request.user.username}')
         
     if request.method == 'POST':
         form = SignInForm(data=request.POST)
@@ -77,7 +77,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user:
                 auth_login(request, user)
-                return redirect('/timeline', username)
+                return redirect(f'/{request.user.username}')
             else:
                 return render(request, 'minitwit/login.html', {'form': form})
         else:
