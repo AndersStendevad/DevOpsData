@@ -71,24 +71,24 @@ def user_timeline(request, username):
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('minitwit/timeline.html')
+        return redirect('/timeline')
         
     if request.method == 'POST':
         form = SignInForm(data=request.POST)
         if form.is_valid():
-            form.save()
             username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password')
-            user = authenticate(username=username, pwd_hash=generate_password_hash(raw_password))
-            auth_login(request, user)
-            return redirect('minitwit/timeline', username)
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user:
+                auth_login(request, user)
+                return redirect('/timeline', username)
+            else:
+                return render(request, 'minitwit/login.html', {'form': form})
         else:
             return render(request, 'minitwit/login.html', {'form': form})
     else:
         form = SignInForm()
         return render(request, 'minitwit/login.html', {'form': form})
-
-
 
 def register(request):
     if request.method == 'POST':
@@ -96,8 +96,9 @@ def register(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             email = form.cleaned_data.get('email')
-            raw_password = form.cleaned_data.get('password1')
-            user = Profile(username=username, email=email, password=raw_password)
+            password = form.cleaned_data.get('password1')
+            user = Profile(username=username, email=email)
+            user.set_password(password)
             user.save()
             form = SignUpForm()
             return redirect('/login/')
