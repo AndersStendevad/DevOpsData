@@ -28,14 +28,15 @@ def get_messages(message_objs):
     for m in message_objs:
         messages.append({"username": m.author.username,
                          "text": m.content,
-                         "pub_date": m.publication_date,})
+                         "pub_date": m.publication_date,
+                         "gravatar": gravatar_url(m.author.email)})
     return messages
 
 def public_timeline(request):
     message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
 
-    return render(request, 'minitwit/timeline.html', {'gravatar': gravatar_url(request.user.email), 'messages': messages})
+def timeline(request):
 
 def timeline(request, username):
     me = Profile.objects.get(username=username)
@@ -62,7 +63,7 @@ def user_timeline(request, username):
 
     message_objs= Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
-    return render(request, 'minitwit/timeline.html', {'gravatar': gravatar_url(request.user.email), 'messages': messages, 'user_logged_in': False})
+    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': user_logged_in})
 
 
 def login(request):
