@@ -117,7 +117,7 @@ class RegistrationView(APIView):
             new_user = Profile.objects.create( \
                     username=request_data['username'], \
                     email=request_data['email'], \
-                    pwd_hash=generate_password_hash(request_data['pwd']))
+                    password=generate_password_hash(request_data['pwd']))
 
             return HttpResponse(status=204)
 
