@@ -82,14 +82,14 @@ WSGI_APPLICATION = 'global.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'minitwitter',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '6666',
-    }
+ 'default': {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'database_minitwit',
+    'USER': 'superuser',
+    'PASSWORD': 'su',
+    'HOST': 'database',
+    'PORT': '5432',
+ }
 }
 
 
