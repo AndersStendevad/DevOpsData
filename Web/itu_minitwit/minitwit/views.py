@@ -4,7 +4,7 @@ import sys
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import auth
-from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.auth import authenticate, login as auth_login, logout as logout_user
 
 from hashlib import md5
 
@@ -33,22 +33,23 @@ def get_messages(message_objs):
     return messages
 
 def public_timeline(request):
+    user_logged_in = request.user.is_authenticated
     message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
+    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': user_logged_in})
 
 def timeline(request):
-
-def timeline(request, username):
-    me = Profile.objects.get(username=username)
-    me_follows = Follower.objects.filter(source_user=me)
-    me_follows_user = [i.target_user for i in me_follows] + [me]
-    message_objs = Message.objects.filter(author_id__in = me_follows_user)
+    if not (user_logged_in := request.user.is_authenticated):
+        return redirect('/public')
+    user = Profile.objects.get(username=request.user.username)
+    user_follows = Follower.objects.filter(source_user=user)
+    user_follows_user = [i.target_user for i in user_follows] + [user]
+    message_objs = Message.objects.filter(author__in = user_follows_user)
     messages = get_messages(message_objs)
-    return render(request, 'minitwit/timeline.html', {'messages': messages})
+    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': user_logged_in})
 
 def user_timeline(request, username):
-    """Display's a users tweets."""
-
+    user_logged_in = request.user.is_authenticated
     if not Profile.objects.filter(username=username).exists():
         return HttpResponse(404)
 
@@ -61,14 +62,13 @@ def user_timeline(request, username):
         #TODO: check if user is followed
         #followed = False
 
-    message_objs= Message.objects.order_by("-publication_date")[:PER_PAGE]
+    message_objs= Message.objects.filter(author = user).order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
     return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': user_logged_in})
 
-
 def login(request):
     if request.user.is_authenticated:
-        return redirect(f'/{request.user.username}')
+        return redirect('/timeline')
         
     if request.method == 'POST':
         form = SignInForm(data=request.POST)
@@ -98,9 +98,18 @@ def register(request):
             user.set_password(password)
             user.save()
             form = SignUpForm()
+            #Flash message of success.
             return redirect('/login/')
         else:
             return render(request, 'minitwit/register.html', {'form': form})
     else:
         form = SignUpForm()
         return render(request, 'minitwit/register.html', {'form': form})
+
+def logout(request):
+    #flash('You were logged out')
+    logout_user(request)
+    return redirect('/public')
+
+#frog
+#dfafasv98789
