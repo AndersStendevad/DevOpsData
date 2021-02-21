@@ -6,9 +6,10 @@ from django.http import JsonResponse, HttpResponse
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 
-from .models import User, Follower, Message
+from rest_framework.decorators import api_view
+from .models import Follower, Message, Profile
+
 from .serializers import MessageSerializer, UserSerializer, FollowSerializer
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -23,8 +24,8 @@ def not_req_from_simulator(request):
          error = "You are not authorized to use this resource!"
          return JsonResponse({'status': 403, 'error_msg': error}, status=403)
 
-def getUserObject(username):
-    return User.objects.filter(username = username).first()
+def getProfileObject(username):
+    return Profile.objects.filter(username = username).first()
 
 def update_latest(self, request):
     global LATEST
@@ -37,7 +38,7 @@ def LatestView(self):
     return JsonResponse({'latest': LATEST})
 
 class MessagesView(APIView):
-   
+
     def get(self, request):
         update_latest(self, request)
         if auth := not_req_from_simulator(request):
@@ -55,7 +56,7 @@ class MessagesView(APIView):
         return Response(serializer.data)
 
 class UserMessagesView(APIView):
-    
+
     def get(self, request, username):
         update_latest(self, request)
         if auth := not_req_from_simulator(request):
@@ -65,7 +66,7 @@ class UserMessagesView(APIView):
         if param := request.query_params.get('no'):
             max_results = int(param)
 
-        if user := getUserObject(username):
+        if user := getProfileObject(username):
 
             messages = Message.objects \
                 .filter(author=user) \
@@ -78,13 +79,13 @@ class UserMessagesView(APIView):
         else:
             return HttpResponse(status=404)
 
-    
+
     def post(self, request, username):
         update_latest(self, request)
         if auth := not_req_from_simulator(request):
             return auth
 
-        if user := getUserObject(username):
+        if user := getProfileObject(username):
 
             request_data = json.loads(request.body)
             new_msg = Message.objects.create(author=user, content=request_data['content'])
@@ -94,7 +95,7 @@ class UserMessagesView(APIView):
             return HttpResponse(status=404)
 
 class RegistrationView(APIView):
-    
+
     def post(self, request):
         update_latest(self, request)
         request_data = json.loads(request.body)
@@ -107,13 +108,13 @@ class RegistrationView(APIView):
             error = "You have to enter a valid email address"
         elif not request_data["pwd"]:
             error = "You have to enter a password"
-        elif getUserObject(request_data["username"]):
+        elif getProfileObject(request_data["username"]):
             error = "The username is already taken"
 
         if error:
             return JsonResponse({'success': 400, 'error_msg': error}, status=400)
         else:
-            new_user = User.objects.create( \
+            new_user = Profile.objects.create( \
                     username=request_data['username'], \
                     email=request_data['email'], \
                     pwd_hash=generate_password_hash(request_data['pwd']))
@@ -121,7 +122,7 @@ class RegistrationView(APIView):
             return HttpResponse(status=204)
 
 class UserFollowersView(APIView):
-    
+
     def get(self, request, username):
         update_latest(self, request)
         if auth := not_req_from_simulator(request):
@@ -130,7 +131,7 @@ class UserFollowersView(APIView):
         max_results = 100
         if param := request.query_params.get('no'):
             max_results = int(param)
-        if user := getUserObject(username):
+        if user := getProfileObject(username):
             followers = Follower.objects.filter(source_user=user)
             serializer = FollowSerializer(followers, many=True)
             return Response(serializer.data)
@@ -139,17 +140,16 @@ class UserFollowersView(APIView):
 
     def post(self, request, username):
         update_latest(self, request)
-
-        if user := User.objects.filter(username = username).first():
+        if user := Profile.objects.filter(username = username).first():
             request_data = json.loads(request.body)
             if 'follow' in request_data.keys():
-                if follow := User.objects.filter(username = request_data['follow']).first():
+                if follow := Profile.objects.filter(username = request_data['follow']).first():
                     new_Follower = Follower.objects.create(source_user = user, target_user = follow)
                     return HttpResponse(status=204)
                 else:
                     return HttpResponse(status=404)
             elif 'unfollow' in request_data.keys():
-                if unfollow := User.objects.filter(username = request_data['unfollow']).first():
+                if unfollow := Profile.objects.filter(username = request_data['unfollow']).first():
                     delete_follower = Follower.objects.filter(source_user = user, target_user = unfollow).delete()
                     return HttpResponse(status=204)
                 else:
@@ -158,3 +158,4 @@ class UserFollowersView(APIView):
                 return HttpResponse(status=404)
         else:
             return HttpResponse(status=404)
+
