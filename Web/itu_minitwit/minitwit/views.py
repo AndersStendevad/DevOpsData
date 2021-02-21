@@ -18,7 +18,7 @@ def format_datetime(timestamp):
     return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d @ %H:%M')
 
 
-def gravatar_url(email, size=80):
+def gravatar_url(email, size=50):
     """Return the gravatar image for the given email address."""
     return 'http://www.gravatar.com/avatar/%s?d=identicon&s=%d' % \
         (md5(email.strip().lower().encode('utf-8')).hexdigest(), size)
@@ -28,7 +28,7 @@ def get_messages(message_objs):
     for m in message_objs:
         messages.append({"username": m.author.username,
                          "text": m.content,
-                         "pub_date": m.publication_date})
+                         "pub_date": m.publication_date,})
     return messages
 
 def public_timeline(request):
@@ -62,14 +62,12 @@ def user_timeline(request, username):
 
     message_objs= Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
-    #TODO: do the stupid gravatar
-    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': False})
-# Create your views here.
+    return render(request, 'minitwit/timeline.html', {'gravatar': gravatar_url(request.user.email), 'messages': messages, 'user_logged_in': False})
 
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('/timeline')
+        return redirect('/timeline', username)
         
     if request.method == 'POST':
         form = SignInForm(data=request.POST)
