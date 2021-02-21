@@ -1,13 +1,19 @@
 <!doctype html>
 {% load static %}
 <title>{% block title %}Welcome{% endblock %} | MiniTwit</title>
-<link rel=stylesheet type=text/css href="{% static 'itu-minitwit/style.css' %}">
+<link rel=stylesheet type=text/css href="{% static 'style.css' %}">
 <div class=page>
   <h1>MiniTwit</h1>
   <div class=navigation>
+  {% if user_logged_in %}
+      <a href="{% url 'timeline' %}">my timeline</a> |
+      <a href="{% url 'public_timeline' %}">public timeline</a> |
+      <a href="{% url 'logout' %}">sign out</a>
+  {% else %}
     <a href="{% url 'public_timeline' %}">public timeline</a> |
     <a href="{% url 'register' %}">sign up</a> |
     <a href="{% url 'login' %}">sign in</a>
+  {% endif %}
   </div>
   <div class=body>
   {% block body %}{% endblock %}

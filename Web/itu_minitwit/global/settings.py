@@ -14,7 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -55,7 +55,7 @@ ROOT_URLCONF = 'global.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(BASE_DIR.joinpath('minitwit', 'templates')), str(BASE_DIR.joinpath('minitwit', 'static'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,14 +75,14 @@ WSGI_APPLICATION = 'global.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'minitwitter', 
-        'USER': 'postgres', 
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost', 
-        'PORT': '5555',
-    }
+ 'default': {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'minitwitter',
+    'USER': 'postgres',
+    'PASSWORD': 'postgres',
+    'HOST': 'localhost',
+    'PORT': '6666',
+ }
 }
 
 
@@ -123,3 +123,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# for authentication
+AUTH_USER_MODEL = 'minitwit.Profile'

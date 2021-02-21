@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "minitwit/layout.html" %}
 {% block title %}
   {% if request.endpoint == 'public_timeline' %}
     Public Timeline
@@ -11,7 +11,7 @@
 {% block body %}
   <ul class=messages>
   {% for message in messages %}
-      <li><img src="gravatar"><p>
+      <li><img src="{{message.gravatar}}"><p>
       <strong><a href="{% url 'user_timeline' message.username %}">{{ message.username }}</a></strong>
       {{ message.text }}
       <small>&mdash; {{ message.pub_date}}</small>

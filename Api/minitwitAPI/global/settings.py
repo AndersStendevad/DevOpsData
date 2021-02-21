@@ -41,6 +41,12 @@ INSTALLED_APPS = [
     'minitwit.apps.MinitwitConfig',
 ]
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -82,7 +88,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
-        'PORT': '5555',
+        'PORT': '6666',
     }
 }
 
@@ -124,3 +130,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# for authentication
+AUTH_USER_MODEL = 'minitwit.Profile'

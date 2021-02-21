@@ -1,0 +1,6 @@
+django
+werkzeug
+psycopg2-binary
+pytest
+djangorestframework
+djangorestframework-jsonapi
