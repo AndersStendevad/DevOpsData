@@ -80,7 +80,7 @@ def login(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password')
             user = authenticate(username=username, pwd_hash=generate_password_hash(raw_password))
-            login(request, user)
+            auth_login(request, user)
             return redirect('minitwit/timeline', username)
         else:
             return render(request, 'minitwit/login.html', {'form': form})
