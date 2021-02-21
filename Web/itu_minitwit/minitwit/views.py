@@ -70,11 +70,12 @@ def user_timeline(request, username):
 
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect('minitwit/timeline.html')
+        
     if request.method == 'POST':
         form = SignInForm(data=request.POST)
-        print(form.is_valid())
         if form.is_valid():
-            print('yeey')
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password')
@@ -82,10 +83,10 @@ def login(request):
             login(request, user)
             return redirect('minitwit/timeline', username)
         else:
-            return render(request, 'minitwit/login.html', {'form':form })
-    else:
-            form = SignInForm()
             return render(request, 'minitwit/login.html', {'form': form})
+    else:
+        form = SignInForm()
+        return render(request, 'minitwit/login.html', {'form': form})
 
 
 
