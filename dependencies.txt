@@ -1,0 +1,29 @@
+[94mDjango 3.1.6[0m
+└── sqlparse
+└── asgiref
+└── pytz
+[94mdjangorestframework 3.12.2[0m
+└── django
+    └── sqlparse
+    └── asgiref
+    └── pytz
+[94mdjangorestframework-jsonapi 4.0.0[0m
+└── djangorestframework
+    └── django
+     └── sqlparse
+     └── asgiref
+     └── pytz
+└── inflection
+└── django
+    └── sqlparse
+    └── asgiref
+    └── pytz
+[94mpytest 6.2.2[0m
+└── toml
+└── iniconfig
+└── attrs
+└── py
+└── packaging
+    └── pyparsing
+└── pluggy
+[94mWerkzeug 1.0.1[0m
