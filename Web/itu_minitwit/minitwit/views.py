@@ -11,8 +11,6 @@ from hashlib import md5
 from .models import Message, Follower, Profile
 from .forms import SignUpForm, SignInForm
 
-from werkzeug.security import check_password_hash, generate_password_hash
-
 PER_PAGE = 20
 
 def format_datetime(timestamp):
