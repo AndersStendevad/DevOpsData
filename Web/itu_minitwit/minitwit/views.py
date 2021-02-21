@@ -4,7 +4,7 @@ import sys
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import auth
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login as auth_login, logout
 
 from hashlib import md5
 
@@ -92,16 +92,17 @@ def login(request):
 
 def register(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = SignUpForm(data=request.POST)
         if form.is_valid():
-            #form.save()
             username = form.cleaned_data.get('username')
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
-            user = Profile(username=username, email=email, password=generate_password_hash(raw_password))
+            user = Profile(username=username, email=email, password=raw_password)
             user.save()
-            #TODO:redirect to signin instead
-            return redirect('public_timeline')
+            form = SignUpForm()
+            return redirect('/login/')
+        else:
+            return render(request, 'minitwit/register.html', {'form': form})
     else:
         form = SignUpForm()
-    return render(request, 'minitwit/register.html', {'form': form})
+        return render(request, 'minitwit/register.html', {'form': form})
