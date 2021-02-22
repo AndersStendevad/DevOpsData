@@ -28,6 +28,7 @@ jobs:
       # Run black
       - name: Run black on code
         uses: jpetrucciani/black-check@master
+        continue-on-error: true
       
       # Runs pytest
       - name: GitHub Action for pytest
