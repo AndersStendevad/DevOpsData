@@ -78,7 +78,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user:
                 auth_login(request, user)
-                return redirect(f'/{request.user.username}')
+                return redirect("/timeline/")
             else:
                 return render(request, 'minitwit/login.html', {'form': form})
         else:
