@@ -11,13 +11,21 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = Profile
-        fields = ('username', 'email', 'password1', 'password2', )
+        fields = (
+            "username",
+            "email",
+            "password1",
+            "password2",
+        )
 
 
 class SignInForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(SignInForm, self).__init__(*args, **kwargs)
-    
+
     class Meta:
         model = Profile
-        fields = ('username', 'password',)
+        fields = (
+            "username",
+            "password",
+        )

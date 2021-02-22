@@ -1,17 +1,18 @@
 from django.test import TestCase
 
-from .models import User, Follower, Message, 
+from .models import User, Follower, Message
 
 
 class UserTests(TestCase):
     def test_user(self):
-       pass 
-        
+        pass
+
+
 class FollowerTests(TestCase):
     def test_follower(self):
-       pass 
-        
+        pass
+
+
 class MessageTests(TestCase):
     def test_message(self):
-       pass 
-        
+        pass

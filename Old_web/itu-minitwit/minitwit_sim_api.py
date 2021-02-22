@@ -35,8 +35,8 @@ LATEST = 0
 def not_req_from_simulator(request):
     from_simulator = request.headers.get("Authorization")
     if from_simulator != "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh":
-         error = "You are not authorized to use this resource!"
-         return jsonify({"status": 403, "error_msg": error}), 403
+        error = "You are not authorized to use this resource!"
+        return jsonify({"status": 403, "error_msg": error}), 403
 
 
 def get_user_id(username):
