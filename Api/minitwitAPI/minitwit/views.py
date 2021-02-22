@@ -1,27 +1,48 @@
-import logging
 import json
+import logging
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from rest_framework.decorators import api_view
 from .models import Follower, Message, Profile
+
 from .serializers import MessageSerializer, UserSerializer, FollowSerializer
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
 logger = logging.getLogger(__name__) # basic logger for debugging
 
-def index(request): # just to have a basic view
-    return HttpResponse("Hi everyone")
+LATEST = 0
+
+def not_req_from_simulator(request):
+    from_simulator = request.headers.get('Authorization')
+    if from_simulator != "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh":
+         error = "You are not authorized to use this resource!"
+         return JsonResponse({'status': 403, 'error_msg': error}, status=403)
 
 def getProfileObject(username):
     return Profile.objects.filter(username = username).first()
 
+def update_latest(self, request):
+    global LATEST
+    try_latest = request.GET.get('latest', -1)
+    LATEST = try_latest if try_latest is not -1 else LATEST
+
+@api_view(['GET'])
+def LatestView(self):
+    global LATEST
+    return JsonResponse({'latest': LATEST})
+
 class MessagesView(APIView):
 
     def get(self, request):
+        update_latest(self, request)
+        if auth := not_req_from_simulator(request):
+            return auth
 
         max_results = 100
         if param := request.query_params.get('no'):
@@ -37,6 +58,9 @@ class MessagesView(APIView):
 class UserMessagesView(APIView):
 
     def get(self, request, username):
+        update_latest(self, request)
+        if auth := not_req_from_simulator(request):
+            return auth
 
         max_results = 100
         if param := request.query_params.get('no'):
@@ -57,6 +81,9 @@ class UserMessagesView(APIView):
 
 
     def post(self, request, username):
+        update_latest(self, request)
+        if auth := not_req_from_simulator(request):
+            return auth
 
         if user := getProfileObject(username):
 
@@ -70,7 +97,7 @@ class UserMessagesView(APIView):
 class RegistrationView(APIView):
 
     def post(self, request):
-
+        update_latest(self, request)
         request_data = json.loads(request.body)
 
         # Check data for correctness
@@ -90,22 +117,17 @@ class RegistrationView(APIView):
             new_user = Profile.objects.create( \
                     username=request_data['username'], \
                     email=request_data['email'], \
-                    pwd_hash=generate_password_hash(request_data['pwd']))
+                    password=generate_password_hash(request_data['pwd']))
 
             return HttpResponse(status=204)
-
-
-class LatestView(APIView):
-
-    def get(self, request):
-        logger.debug('entered get request')
-        return JsonResponse({
-            'success': True
-            })
 
 class UserFollowersView(APIView):
 
     def get(self, request, username):
+        update_latest(self, request)
+        if auth := not_req_from_simulator(request):
+            return auth
+
         max_results = 100
         if param := request.query_params.get('no'):
             max_results = int(param)
@@ -117,6 +139,7 @@ class UserFollowersView(APIView):
             return HttpResponse(status=404)
 
     def post(self, request, username):
+        update_latest(self, request)
         if user := Profile.objects.filter(username = username).first():
             request_data = json.loads(request.body)
             if 'follow' in request_data.keys():
@@ -135,3 +158,4 @@ class UserFollowersView(APIView):
                 return HttpResponse(status=404)
         else:
             return HttpResponse(status=404)
+

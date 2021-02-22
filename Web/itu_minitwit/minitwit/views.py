@@ -4,7 +4,7 @@ import sys
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import auth
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth import authenticate, login as auth_login, logout as logout_user
 
 from hashlib import md5
 
@@ -18,7 +18,7 @@ def format_datetime(timestamp):
     return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d @ %H:%M')
 
 
-def gravatar_url(email, size=80):
+def gravatar_url(email, size=50):
     """Return the gravatar image for the given email address."""
     return 'http://www.gravatar.com/avatar/%s?d=identicon&s=%d' % \
         (md5(email.strip().lower().encode('utf-8')).hexdigest(), size)
@@ -28,39 +28,43 @@ def get_messages(message_objs):
     for m in message_objs:
         messages.append({"username": m.author.username,
                          "text": m.content,
-                         "pub_date": m.publication_date})
+                         "pub_date": m.publication_date,
+                         "gravatar": gravatar_url(m.author.email)})
     return messages
 
 def public_timeline(request):
-    user_logged_in = bool(request.user.is_authenticated)
+    user_logged_in = request.user.is_authenticated
     message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
-
-    return render(request, 'minitwit/timeline.html', {'messages': messages, "user_logged_in": user_logged_in})
+    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': user_logged_in})
 
 def timeline(request):
-    username = request.user.username
-    print(username)
-    me = Profile.objects.get(username=username)
-    me_follows = Follower.objects.filter(source_user=me)
-    me_follows_user = [i.target_user for i in me_follows] + [me]
-    message_objs = Message.objects.filter(author_id__in = me_follows_user)
+    if not (user_logged_in := request.user.is_authenticated):
+        return redirect('/public')
+    user = Profile.objects.get(username=request.user.username)
+    user_follows = Follower.objects.filter(source_user=user)
+    user_follows_user = [i.target_user for i in user_follows] + [user]
+    message_objs = Message.objects.filter(author__in = user_follows_user)
     messages = get_messages(message_objs)
-    return render(request, 'minitwit/timeline.html', {'messages': messages, "user_logged_in": True})
+    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': user_logged_in})
 
 def user_timeline(request, username):
-    """Display's a users tweets."""
-
+    user_logged_in = request.user.is_authenticated
     if not Profile.objects.filter(username=username).exists():
         return HttpResponse(404)
 
     user = Profile.objects.get(username=username)
 
-    message_objs= Message.objects.order_by("-publication_date")[:PER_PAGE]
-    messages = get_messages(message_objs)
-    #TODO: do the stupid gravatar
-    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': False})
+    #TODO: this only works if we use the contrib.auth.models.Profile
+    # as user model, but then the db fucks up...
+    #if user.is_authenticated:
+        #user_logged_in = True
+        #TODO: check if user is followed
+        #followed = False
 
+    message_objs= Message.objects.filter(author = user).order_by("-publication_date")[:PER_PAGE]
+    messages = get_messages(message_objs)
+    return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': user_logged_in})
 
 def login(request):
     if request.user.is_authenticated:
@@ -74,7 +78,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user:
                 auth_login(request, user)
-                return redirect('/')
+                return redirect(f'/{request.user.username}')
             else:
                 return render(request, 'minitwit/login.html', {'form': form})
         else:
@@ -94,6 +98,7 @@ def register(request):
             user.set_password(password)
             user.save()
             form = SignUpForm()
+            #Flash message of success.
             return redirect('/login/')
         else:
             return render(request, 'minitwit/register.html', {'form': form})
@@ -102,5 +107,9 @@ def register(request):
         return render(request, 'minitwit/register.html', {'form': form})
 
 def logout(request):
-    auth_logout(request)
-    return redirect('/public/')
+    #flash('You were logged out')
+    logout_user(request)
+    return redirect('/public')
+
+#frog
+#dfafasv98789
