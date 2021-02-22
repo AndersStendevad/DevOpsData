@@ -8,10 +8,9 @@ from minitwit.views import (
     timeline,
 )
 
-
 urlpatterns = [
     path(
-        "", timeline, name="timeline"
+        "", public_timeline, name="public_timeline"
     ),  # Now both '' and /public leads to the same page... a little inconsistent..
     path("public/", public_timeline, name="public_timeline"),
     path("login/", login, name="login"),
