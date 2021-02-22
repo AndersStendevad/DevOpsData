@@ -25,11 +25,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      # Run black
-      - name: Run black on code
-        uses: jpetrucciani/black-check@master
-        continue-on-error: true
-      
       # Runs pytest
       - name: GitHub Action for pytest
         uses: cclauss/GitHub-Action-for-pytest@0.5.0
+      
+        # Run black
+      - name: Run black on code
+        uses: jpetrucciani/black-check@master
+        continue-on-error: True
+      
