@@ -44,11 +44,9 @@ def public_timeline(request):
 
 
 def unfollow_user(request, username):
-    #delete user
     profile_user = Profile.objects.get(username=username)
     follower = Follower.objects.filter(source_user=request.user, target_user=profile_user)
     follower.delete()
-    #redirect back to timeline
     return redirect('/timeline/')
 
 
@@ -91,14 +89,17 @@ def user_timeline(request, username):
     profile_user = Profile.objects.get(username=username)
 
     user_logged_in = request.user.is_authenticated
+    current_user = False
+    followed = False
     if user_logged_in:
-        #if query empty, not followed
         followed = bool(Follower.objects.filter(source_user=request.user, target_user=profile_user))
-
+        if request.user.username == profile_user.username:
+            current_user = True
+            
     message_objs= Message.objects.filter(author = profile_user).order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
     context = {'messages': messages, 'user_logged_in': user_logged_in, 'username': profile_user.username, 'followed': followed,
-    'timeline': False, 'public_timeline': False, 'user_timeline': True}
+    'timeline': False, 'public_timeline': False, 'user_timeline': True, 'current_user': current_user}
     return render(request, 'minitwit/timeline.html', context)
 
 def login(request):
@@ -133,7 +134,6 @@ def register(request):
             user.set_password(password)
             user.save()
             form = SignUpForm()
-            #Flash message of success.
             return redirect('/login/')
         else:
             return render(request, 'minitwit/register.html', {'form': form})
@@ -142,9 +142,5 @@ def register(request):
         return render(request, 'minitwit/register.html', {'form': form})
 
 def logout(request):
-    #flash('You were logged out')
     logout_user(request)
     return redirect('/public')
-
-#frog
-#dfafasv98789

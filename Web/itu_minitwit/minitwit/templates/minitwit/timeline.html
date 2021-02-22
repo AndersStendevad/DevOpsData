@@ -9,10 +9,19 @@
   {% endif %}
 {% endblock %}
 {% block body %}
+{% if user_timeline %}
+<h2>{{username}}'s Timeline </h2>
+{% elif public_timeline %}
+<h2> Public Timeline </h2>
+{% else %}
+<h2> My Timeline </h2>
+{% endif %}
 {% if user_logged_in %}
   {% if user_timeline %}
     <div class=followstatus>
-    {% if followed %}
+    {% if current_user %}
+      Your Timeline.
+    {% elif followed %}
       You are currently following this user.
       <a class=unfollow href="{% url 'unfollow_user' username %}">Unfollow user</a>.
     {% else %}
@@ -37,6 +46,8 @@
       <strong><a href="{% url 'user_timeline' message.username %}">{{ message.username }}</a></strong>
       {{ message.text }}
       <small>&mdash; {{ message.pub_date}}</small>
+  {% empty %}
+      <li><em>There's no message so far.</em>
   {% endfor %}
   </ul>
 {% endblock %}
