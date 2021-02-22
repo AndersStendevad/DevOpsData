@@ -4,7 +4,7 @@ import sys
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import auth
-from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 from hashlib import md5
 
@@ -32,18 +32,21 @@ def get_messages(message_objs):
     return messages
 
 def public_timeline(request):
+    user_logged_in = bool(request.user.is_authenticated)
     message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
 
-    return render(request, 'minitwit/timeline.html', {'messages': messages})
+    return render(request, 'minitwit/timeline.html', {'messages': messages, "user_logged_in": user_logged_in})
 
-def timeline(request, username):
+def timeline(request):
+    username = request.user.username
+    print(username)
     me = Profile.objects.get(username=username)
     me_follows = Follower.objects.filter(source_user=me)
     me_follows_user = [i.target_user for i in me_follows] + [me]
     message_objs = Message.objects.filter(author_id__in = me_follows_user)
     messages = get_messages(message_objs)
-    return render(request, 'minitwit/timeline.html', {'messages': messages})
+    return render(request, 'minitwit/timeline.html', {'messages': messages, "user_logged_in": True})
 
 def user_timeline(request, username):
     """Display's a users tweets."""
@@ -53,24 +56,16 @@ def user_timeline(request, username):
 
     user = Profile.objects.get(username=username)
 
-    #TODO: this only works if we use the contrib.auth.models.Profile
-    # as user model, but then the db fucks up...
-    #if user.is_authenticated:
-        #user_logged_in = True
-        #TODO: check if user is followed
-        #followed = False
-
     message_objs= Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
     #TODO: do the stupid gravatar
     return render(request, 'minitwit/timeline.html', {'messages': messages, 'user_logged_in': False})
-# Create your views here.
 
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('/timeline')
-        
+        return redirect('/')
+
     if request.method == 'POST':
         form = SignInForm(data=request.POST)
         if form.is_valid():
@@ -79,7 +74,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user:
                 auth_login(request, user)
-                return redirect('/timeline', username)
+                return redirect('/')
             else:
                 return render(request, 'minitwit/login.html', {'form': form})
         else:
@@ -105,3 +100,7 @@ def register(request):
     else:
         form = SignUpForm()
         return render(request, 'minitwit/register.html', {'form': form})
+
+def logout(request):
+    auth_logout(request)
+    return redirect('/public/')
