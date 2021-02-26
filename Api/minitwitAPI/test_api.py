@@ -37,3 +37,14 @@ class SimpleTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content)["latest"], '1337')
 
+
+    def test_create_msg(self):
+        username = "a"
+        url = f"/msgs/{username}/?latest=2"
+        data = {"content": "Blub!"}
+        response = self.client.post(url, data, content_type='application/json', HEADERS=self.HEADERS)
+        self.assertEqual(response.status_code, 204)
+
+        url = "/latest/"
+        response = self.client.get(url, HEADERS=self.HEADERS)
+        self.assertEqual(json.loads(response.content)["latest"], '2')
