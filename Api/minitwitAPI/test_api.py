@@ -31,3 +31,9 @@ class SimpleTest(unittest.TestCase):
         response = self.client.post(url, data, content_type='application/json', HEADERS=self.HEADERS)
         self.assertEqual(response.status_code, 204)
        
+           
+        url = "/latest/"
+        response = self.client.get(url, HEADERS=self.HEADERS)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)["latest"], '1337')
+
