@@ -6,8 +6,9 @@ import requests
 from contextlib import closing
 
 
-BASE_URL = "http://127.0.0.1:5001"
-DATABASE = "/tmp/minitwit.db"
+BASE_URL = "http://localhost:8080"
+# BASE_URL = "http://134.209.231.63:8080"
+# DATABASE = "/tmp/minitwit.db"
 USERNAME = "simulator"
 PWD = "super_safe!"
 CREDENTIALS = ":".join([USERNAME, PWD]).encode("ascii")
@@ -17,19 +18,6 @@ HEADERS = {
     "Content-Type": "application/json",
     f"Authorization": f"Basic {ENCODED_CREDENTIALS}",
 }
-
-
-def init_db():
-    """Creates the database tables."""
-    with closing(sqlite3.connect(DATABASE)) as db:
-        with open("schema.sql") as fp:
-            db.cursor().executescript(fp.read())
-        db.commit()
-
-
-# Empty the database and initialize the schema again
-os.system(f"rm {DATABASE}")
-init_db()
 
 
 def test_latest():
@@ -44,7 +32,7 @@ def test_latest():
     url = f"{BASE_URL}/latest"
     response = requests.get(url, headers=HEADERS)
     assert response.ok
-    assert response.json()["latest"] == 1337
+    assert response.json()["latest"] == '1337'
 
 
 def test_register():
@@ -61,7 +49,7 @@ def test_register():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == 1
+    assert response.json()["latest"] == '1'
 
 
 def test_create_msg():
@@ -74,7 +62,7 @@ def test_create_msg():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == 2
+    assert response.json()["latest"] == '2'
 
 
 def test_get_latest_user_msgs():
@@ -86,7 +74,7 @@ def test_get_latest_user_msgs():
     assert response.status_code == 200
 
     got_it_earlier = False
-    for msg in response.json():
+    for msg in json.loads(response.text):
         if msg["content"] == "Blub!" and msg["user"] == username:
             got_it_earlier = True
 
@@ -94,18 +82,18 @@ def test_get_latest_user_msgs():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == 3
+    assert response.json()["latest"] == '3'
 
 
 def test_get_latest_msgs():
     username = "a"
     query = {"no": 20, "latest": 4}
-    url = f"{BASE_URL}/msgs"
+    url = f"{BASE_URL}/msgs/"
     response = requests.get(url, headers=HEADERS, params=query)
     assert response.status_code == 200
 
     got_it_earlier = False
-    for msg in response.json():
+    for msg in json.loads(response.text):
         if msg["content"] == "Blub!" and msg["user"] == username:
             got_it_earlier = True
 
@@ -113,7 +101,7 @@ def test_get_latest_msgs():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == 4
+    assert response.json()["latest"] == '4'
 
 
 def test_register_b():
@@ -130,7 +118,7 @@ def test_register_b():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == 5
+    assert response.json()["latest"] == '5'
 
 
 def test_register_c():
@@ -146,7 +134,7 @@ def test_register_c():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == 6
+    assert response.json()["latest"] == '6'
 
 
 def test_follow_user():
@@ -166,13 +154,14 @@ def test_follow_user():
     response = requests.get(url, headers=HEADERS, params=query)
     assert response.ok
 
-    json_data = response.json()
+    # json_data = response.json()
+    json_data = json.loads(response.text)
     assert "b" in json_data["follows"]
     assert "c" in json_data["follows"]
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == 9
+    assert response.json()["latest"] == '9'
 
 
 def test_a_unfollows_b():
@@ -189,8 +178,11 @@ def test_a_unfollows_b():
     query = {"no": 20, "latest": 11}
     response = requests.get(url, params=query, headers=HEADERS)
     assert response.ok
-    assert "b" not in response.json()["follows"]
+    # assert "b" not in response.json()["follows"]
+
+    json_data = json.loads(response.text)
+    assert "b" not in json_data["follows"]
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == 11
+    assert response.json()["latest"] == '11'

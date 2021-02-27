@@ -33,7 +33,7 @@ def getProfileObject(username):
 def update_latest(self, request):
     global LATEST
     try_latest = request.GET.get("latest", -1)
-    LATEST = try_latest if try_latest is not -1 else LATEST
+    LATEST = try_latest if try_latest != -1 else LATEST
 
 
 @api_view(["GET"])
@@ -147,7 +147,7 @@ class UserFollowersView(APIView):
         if user:
             followers = Follower.objects.filter(source_user=user)
             serializer = FollowSerializer(followers, many=True)
-            return Response(serializer.data)
+            return JsonResponse({"follows": serializer.data})
         else:
             return HttpResponse(status=404)
 
