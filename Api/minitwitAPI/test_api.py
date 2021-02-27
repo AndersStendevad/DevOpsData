@@ -3,10 +3,8 @@ from django.test import Client
 import base64
 import json
 
-
 class SimpleTest(unittest.TestCase):
 
-    BASE_URL = "http://127.0.0.1:8000"
     USERNAME = "simulator"
     PWD = "super_safe!"
     CREDENTIALS = ":".join([USERNAME, PWD]).encode("ascii")
@@ -19,11 +17,7 @@ class SimpleTest(unittest.TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_details(self):
-        response = self.client.get("/msgs/")
-        self.assertEqual(response.status_code, 403)
-
-    def test_latest(self):
+    def test_1_latest(self):
         data = {"username": "test", "email": "test@test", "pwd": "foo"}
         response = self.client.post(
             "/register?latest=1337",
@@ -37,7 +31,7 @@ class SimpleTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content)["latest"], "1337")
 
-    def test_register(self):
+    def test_2_register(self):
         data = {"username": "a", "email": "a@a.a", "pwd": "a"}
 
         response = self.client.post(
@@ -54,15 +48,7 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get("/latest/", **self.HEADERS)
         self.assertEqual(json.loads(response.content)["latest"], "1")
 
-        self.Test_create_msg()
-        self.Test_get_latest_user_msgs()
-        self.Test_get_latest_msgs()
-        self.Test_register_b()
-        self.Test_register_c()
-        self.Test_follow_user()
-        self.Test_a_unfollows_b()
-
-    def Test_create_msg(self):
+    def test_3_create_msg(self):
         data = {"content": "Blub!"}
         response = self.client.post(
             "/msgs/a?latest=2",
@@ -75,7 +61,7 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get("/latest/", **self.HEADERS)
         self.assertEqual(json.loads(response.content)["latest"], "2")
 
-    def Test_get_latest_user_msgs(self):
+    def test_4_get_latest_user_msgs(self):
         response = self.client.get("/msgs/a?no=20&latest=3", **self.HEADERS)
         self.assertEqual(response.status_code, 200)
 
@@ -89,7 +75,7 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get("/latest/", **self.HEADERS)
         self.assertEqual(json.loads(response.content)["latest"], "3")
 
-    def Test_get_latest_msgs(self):
+    def test_5_get_latest_msgs(self):
         response = self.client.get("/msgs/?no=20&latest=4", **self.HEADERS)
         self.assertEqual(response.status_code, 200)
 
@@ -103,7 +89,7 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get("/latest/", **self.HEADERS)
         self.assertEqual(json.loads(response.content)["latest"], "4")
 
-    def Test_register_b(self):
+    def test_6_register_b(self):
         data = {"username": "b", "email": "b@b.b", "pwd": "b"}
         response = self.client.post(
             "/register?latest=5",
@@ -119,7 +105,7 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get("/latest/", **self.HEADERS)
         self.assertEqual(json.loads(response.content)["latest"], "5")
 
-    def Test_register_c(self):
+    def test_7_register_c(self):
         data = {"username": "c", "email": "c@c.c", "pwd": "c"}
         response = self.client.post(
             "/register?latest=6",
@@ -135,7 +121,7 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get("/latest/", **self.HEADERS)
         self.assertEqual(json.loads(response.content)["latest"], "6")
 
-    def Test_follow_user(self):
+    def test_8_follow_user(self):
         data = {"follow": "b"}
         response = self.client.post(
             "/fllws/a?latest=7",
@@ -169,7 +155,7 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get("/latest/", **self.HEADERS)
         self.assertEqual(json.loads(response.content)["latest"], "9")
 
-    def Test_a_unfollows_b(self):
+    def test_9_a_unfollows_b(self):
         data = {"unfollow": "b"}
         response = self.client.post(
             "/fllws/a?latest=10",
@@ -179,14 +165,13 @@ class SimpleTest(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 204)
 
-        response = self.client.post(
+        response = self.client.get(
             "/fllws/a?no=20&latest=11",
-            content_type="application/json",
             **self.HEADERS,
         )
-        self.assertEqual(response.status_code, 404)
+       
+        self.assertEqual(response.status_code, 200)
 
-        response = self.client.get("/fllws/a", **self.HEADERS)
         unfollowed = False
         if "b" not in json.loads(response.content)["follows"]:
             unfollowed = True
