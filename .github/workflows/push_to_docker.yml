@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push Api
-        id: docker_build
+        id: docker_build_api
         uses: docker/build-push-action@v2
         with:
           context: ./Api
@@ -32,7 +32,7 @@ jobs:
           tags: andersstendevad/minitwit_Api:latest
       -
         name: Build and push Web
-        id: docker_build
+        id: docker_build_web
         uses: docker/build-push-action@v2
         with:
           context: ./Web
