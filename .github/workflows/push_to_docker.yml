@@ -64,7 +64,7 @@ jobs:
         with:
           context: ./Web
           push: true
-          tags: andersstendevad/minitwit_web:latest:latest
+          tags: andersstendevad/minitwit_web:latest
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
