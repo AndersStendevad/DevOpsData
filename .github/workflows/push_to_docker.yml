@@ -56,7 +56,7 @@ jobs:
         with:
           context: ./Api
           push: true
-          tags: andersstendevad/minitwit_Api:${version}
+          tags: andersstendevad/minitwit_Api:latest
       -
         name: Build and push Web
         id: docker_build_web
@@ -64,7 +64,7 @@ jobs:
         with:
           context: ./Web
           push: true
-          tags: andersstendevad/minitwit_Web:latest:${version}
+          tags: andersstendevad/minitwit_Web:latest:latest
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
