@@ -26,11 +26,11 @@ jobs:
 
       - name: Test Api
         run: |
-          python Api/minitwitAPI/manage.py test
+          python Api/minitwitAPI/manage.py test Api/minitwitAPI
 
       - name: Test Web
         run: |
-          python Web/itu_minitwit/manage.py test
+          python Web/itu_minitwit/manage.py test Web/itu_minitwit
 
       - name: Run black on code
         run: |
