@@ -1,3 +1,4 @@
+black
 flask
 werkzeug
 django

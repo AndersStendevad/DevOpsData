@@ -1,0 +1,37 @@
+name: quality_assurance
+
+on:
+  push:
+    branches: [  development ]
+  pull_request:
+    branches: [ main, development ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install requirements
+        run: |
+          python -m pip install -r requirements.txt
+
+      - name: Test Api
+        run: |
+          python Api/minitwitAPI/manage.py test
+
+      - name: Test Web
+        run: |
+          python Web/itu_minitwit/manage.py test
+
+      - name: Run black on code
+        run: |
+          black --check .
+        continue-on-error: True
+      
