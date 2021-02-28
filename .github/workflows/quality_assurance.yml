@@ -3,8 +3,6 @@ name: quality_assurance
 on:
   push:
     branches: [  development ]
-  pull_request:
-    branches: [ main, development ]
 
 jobs:
   test:
