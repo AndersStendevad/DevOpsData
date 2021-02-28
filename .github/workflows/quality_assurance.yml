@@ -2,12 +2,12 @@ name: quality_assurance
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [  development ]
   pull_request:
     branches: [ main, development ]
 
 jobs:
-  build and test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
