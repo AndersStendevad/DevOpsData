@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login, logout as logout_user
+from django.contrib import messages as flash_messages
 
 from hashlib import md5
 
@@ -40,6 +41,7 @@ def public_timeline(request):
     if user_logged_in:
         user = Profile.objects.get(username=request.user.username)
         context['username'] = user.username
+    #return HttpResponse("all is well mom") # just for debugging the changes
     return render(request, 'minitwit/timeline.html', context)
 
 
@@ -64,7 +66,6 @@ def timeline(request):
     user_follows_user = [i.target_user for i in user_follows] + [user]
     context = {'user_logged_in': user_logged_in, 'timeline': True, 'public_timeline': False, 'user_timeline': False}
     if request.method == 'POST':
-        print('request is post')
         form = PostForm(data=request.POST)
         if form.is_valid():
             new_message = Message(author=user, content=form.cleaned_data.get('content'))
@@ -95,7 +96,7 @@ def user_timeline(request, username):
         followed = bool(Follower.objects.filter(source_user=request.user, target_user=profile_user))
         if request.user.username == profile_user.username:
             current_user = True
-            
+
     message_objs= Message.objects.filter(author = profile_user).order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
     context = {'messages': messages, 'user_logged_in': user_logged_in, 'username': profile_user.username, 'followed': followed,
@@ -121,7 +122,7 @@ def login(request):
             return render(request, 'minitwit/login.html', {'form': form})
     else:
         form = SignInForm()
-        return render(request, 'minitwit/login.html', {'form': form})
+        return render(request, 'minitwit/login.html', {'form': form, 'flash_messages': flash_messages.get_messages(request)})
 
 def register(request):
     if request.method == 'POST':
@@ -133,6 +134,7 @@ def register(request):
             user = Profile(username=username, email=email)
             user.set_password(password)
             user.save()
+            flash_messages.add_message(request, flash_messages.SUCCESS, "You were successfully registered and can login now")
             form = SignUpForm()
             return redirect('/login/')
         else:

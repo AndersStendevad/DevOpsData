@@ -20,6 +20,8 @@ services:
       - "database"
     ports:
       - "8000:8000"
+    volumes:
+      - "./Web/itu_minitwit:/itu_minitwit"
   api:
     container_name: api_minitwit
     build: ./Api
@@ -27,5 +29,7 @@ services:
       - "database"
     ports:
       - "8080:8080"
+    volumes:
+      - "./Api/minitwitAPI:/minitwitAPI"
 volumes:
   database-data:
