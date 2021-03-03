@@ -39,7 +39,7 @@ def update_latest(self, request):
 @api_view(["GET"])
 def LatestView(self):
     global LATEST
-    return JsonResponse({"latest": LATEST})
+    return JsonResponse({"latest": int(LATEST)})
 
 
 class MessagesView(APIView):
