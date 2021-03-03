@@ -40,6 +40,7 @@ def public_timeline(request):
     if user_logged_in:
         user = Profile.objects.get(username=request.user.username)
         context['username'] = user.username
+    #return HttpResponse("all is well mom") # just for debugging the changes
     return render(request, 'minitwit/timeline.html', context)
 
 
