@@ -26,7 +26,7 @@ class SimpleTest(TestCase):
 
         response = self.client.get("/latest/", **self.HEADERS)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content)["latest"], "1337")
+        self.assertEqual(json.loads(response.content)["latest"], 1337)
 
     def test_2_register(self):
         data = {"username": "a", "email": "a@a.a", "pwd": "a"}
@@ -43,7 +43,7 @@ class SimpleTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get("/latest/", **self.HEADERS)
-        self.assertEqual(json.loads(response.content)["latest"], "1")
+        self.assertEqual(json.loads(response.content)["latest"], 1)
 
     def test_3_create_msg(self):
         data = {"content": "Blub!"}
@@ -56,7 +56,7 @@ class SimpleTest(TestCase):
         self.assertEqual(response.status_code, 204)
 
         response = self.client.get("/latest/", **self.HEADERS)
-        self.assertEqual(json.loads(response.content)["latest"], "2")
+        self.assertEqual(json.loads(response.content)["latest"], 2)
 
     def test_4_get_latest_user_msgs(self):
         response = self.client.get("/msgs/a?no=20&latest=3", **self.HEADERS)
@@ -70,7 +70,7 @@ class SimpleTest(TestCase):
         self.assertEqual(got_it_earlier, True)
 
         response = self.client.get("/latest/", **self.HEADERS)
-        self.assertEqual(json.loads(response.content)["latest"], "3")
+        self.assertEqual(json.loads(response.content)["latest"], 3)
 
     def test_5_get_latest_msgs(self):
         response = self.client.get("/msgs/?no=20&latest=4", **self.HEADERS)
@@ -84,7 +84,7 @@ class SimpleTest(TestCase):
         self.assertEqual(got_it_earlier, True)
 
         response = self.client.get("/latest/", **self.HEADERS)
-        self.assertEqual(json.loads(response.content)["latest"], "4")
+        self.assertEqual(json.loads(response.content)["latest"], 4)
 
     def test_6_register_b(self):
         data = {"username": "b", "email": "b@b.b", "pwd": "b"}
@@ -100,7 +100,7 @@ class SimpleTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get("/latest/", **self.HEADERS)
-        self.assertEqual(json.loads(response.content)["latest"], "5")
+        self.assertEqual(json.loads(response.content)["latest"], 5)
 
     def test_7_register_c(self):
         data = {"username": "c", "email": "c@c.c", "pwd": "c"}
@@ -116,7 +116,7 @@ class SimpleTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get("/latest/", **self.HEADERS)
-        self.assertEqual(json.loads(response.content)["latest"], "6")
+        self.assertEqual(json.loads(response.content)["latest"], 6)
 
     def test_8_follow_user(self):
         data = {"follow": "b"}
@@ -150,7 +150,7 @@ class SimpleTest(TestCase):
         self.assertEqual(check_c_in, True)
 
         response = self.client.get("/latest/", **self.HEADERS)
-        self.assertEqual(json.loads(response.content)["latest"], "9")
+        self.assertEqual(json.loads(response.content)["latest"], 9)
 
     def test_9_a_unfollows_b(self):
         data = {"unfollow": "b"}
@@ -175,4 +175,4 @@ class SimpleTest(TestCase):
         self.assertEqual(unfollowed, True)
 
         response = self.client.get("/latest/", **self.HEADERS)
-        self.assertEqual(json.loads(response.content)["latest"], "11")
+        self.assertEqual(json.loads(response.content)["latest"], 11)
