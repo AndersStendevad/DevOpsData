@@ -16,20 +16,36 @@ services:
   web:
     container_name: web_minitwit
     build: ./Web
+    command: python3 manage.py runserver 0.0.0.0:8000
     depends_on:
       - "database"
+      - "api"
     ports:
       - "8000:8000"
-    volumes:
-      - "./Web/itu_minitwit:/itu_minitwit"
+
+  web_test:
+    container_name: web_minitwit_test
+    build: ./Web
+    command: python3 manage.py test .
+    depends_on:
+      - "database"
+      - "api"
+
   api:
     container_name: api_minitwit
     build: ./Api
+    command: ./start.sh
     depends_on:
       - "database"
     ports:
       - "8080:8080"
-    volumes:
-      - "./Api/minitwitAPI:/minitwitAPI"
+  
+  api_test:
+    container_name: api_minitwit_test
+    build: ./Api
+    command: python3 manage.py test .
+    depends_on:
+      - "database"
+
 volumes:
   database-data:

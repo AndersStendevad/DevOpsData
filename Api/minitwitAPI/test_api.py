@@ -3,6 +3,7 @@ from django.test import Client
 import base64
 import json
 
+
 class SimpleTest(unittest.TestCase):
 
     USERNAME = "simulator"
@@ -169,7 +170,7 @@ class SimpleTest(unittest.TestCase):
             "/fllws/a?no=20&latest=11",
             **self.HEADERS,
         )
-       
+
         self.assertEqual(response.status_code, 200)
 
         unfollowed = False

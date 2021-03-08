@@ -3,8 +3,6 @@ name: quality_assurance
 on:
   push:
     branches: [  development ]
-  pull_request:
-    branches: [ main, development ]
 
 jobs:
   test:
@@ -22,13 +20,10 @@ jobs:
         run: |
           python -m pip install -r requirements.txt
 
-      - name: Test Api
+      - name: Test Api and Web
+        timeout-minutes: 10
         run: |
-          python Api/minitwitAPI/manage.py test
-
-      - name: Test Web
-        run: |
-          python Web/itu_minitwit/manage.py test
+          ./test_all_containers.sh
 
       - name: Run black on code
         run: |
