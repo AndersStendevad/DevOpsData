@@ -35,11 +35,11 @@ class SimpleTest(TestCase):
         return response
 
     def latest_msg_user(self, user, no, latest):
-        response = self.client.get(f"/msgs/{user}?no={no}}&latest={latest}", **self.HEADERS)
+        response = self.client.get(f"/msgs/{user}?no={no}&latest={latest}", **self.HEADERS)
         return response
 
     def latest_msg(self, no, latest):
-        response = self.client.get(f"/msgs/?no={no}}&latest={latest}", **self.HEADERS)
+        response = self.client.get(f"/msgs/?no={no}&latest={latest}", **self.HEADERS)
         return response
 
     def follow_user(self, base_user, follow, latest):
@@ -63,7 +63,7 @@ class SimpleTest(TestCase):
         return response
 
     def test_1_latest(self):
-        response = self.register_user("test", "test@test", "foo", 133)
+        response = self.register_user("test", "test@test", "foo", 1337)
         self.assertEqual(response.status_code, 204)
 
         response = self.client.get("/latest/", **self.HEADERS)
@@ -92,7 +92,7 @@ class SimpleTest(TestCase):
         self.register_user("a", "a@a.a", "a", 1)
         self.msg_user("a", "Blub!", 2)
 
-        self.response = latest_msg_user("a", 20, 3)
+        response = self.latest_msg_user("a", 20, 3)
         self.assertEqual(response.status_code, 200)
 
         got_it_earlier = False
