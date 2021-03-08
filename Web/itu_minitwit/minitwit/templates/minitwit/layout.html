@@ -8,7 +8,7 @@
   {% if user_logged_in %}
       <a href="{% url 'timeline' %}">my timeline</a> |
       <a href="{% url 'public_timeline' %}">public timeline</a> |
-      <a href="{% url 'logout' %}">sign out</a>
+      <a href="{% url 'logout' %}">sign out [{{ request.user.username}}]</a>
   {% else %}
     <a href="{% url 'public_timeline' %}">public timeline</a> |
     <a href="{% url 'register' %}">sign up</a> |
