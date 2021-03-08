@@ -16,7 +16,10 @@ services:
   web:
     container_name: web_minitwit
     build: ./Web
-    command: python3 manage.py runserver 0.0.0.0:8000
+    #command: ./start.sh
+    command: sh -c "
+      sleep 3 &&
+      ./start.sh"
     depends_on:
       - "database"
       - "api"
@@ -26,8 +29,11 @@ services:
   web_test:
     container_name: web_minitwit_test
     build: ./Web
-    command: python3 manage.py test .
+    command: sh -c "
+      sleep 5 &&
+      python3 manage.py test"
     depends_on:
+      - "web"
       - "database"
       - "api"
 
@@ -43,9 +49,12 @@ services:
   api_test:
     container_name: api_minitwit_test
     build: ./Api
-    command: python3 manage.py test .
+    command: sh -c "
+      sleep 5 &&
+      python3 manage.py test"
     depends_on:
       - "database"
+      - "api"
 
 volumes:
   database-data:

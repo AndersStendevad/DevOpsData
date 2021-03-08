@@ -13,3 +13,4 @@ class Command(BaseCommand):
             User.objects.create_superuser(
                 username="admin", email="admin@example.com", password="admin"
             )
+            self.stdout.write("admin created ...")

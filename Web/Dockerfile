@@ -8,4 +8,5 @@ RUN export PYTHONPATH="${PYTHONPATH}:${HOME}/itu_minitwit"
 
 RUN pip3 install -r requirements.txt
 
-
+COPY start.sh $HOME/itu_minitwit
+RUN chmod +x start.sh
