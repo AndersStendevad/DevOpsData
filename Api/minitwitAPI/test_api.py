@@ -1,10 +1,9 @@
-import unittest
-from django.test import Client
+from django.test import Client, TestCase
 import base64
 import json
 
 
-class SimpleTest(unittest.TestCase):
+class SimpleTest(TestCase):
 
     USERNAME = "simulator"
     PWD = "super_safe!"
@@ -14,9 +13,6 @@ class SimpleTest(unittest.TestCase):
         "Connection": "close",
         "HTTP_AUTHORIZATION": f"Basic {ENCODED_CREDENTIALS}",
     }
-
-    def setUp(self):
-        self.client = Client()
 
     def test_1_latest(self):
         data = {"username": "test", "email": "test@test", "pwd": "foo"}
