@@ -15,6 +15,13 @@
     <a href="{% url 'login' %}">sign in</a>
   {% endif %}
   </div>
+  {% if flash_messages %}
+    <ul class=flashes>
+      {% for msg in flash_messages %}
+        <li>{{msg.message}}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
   <div class=body>
   {% block body %}{% endblock %}
   </div>
