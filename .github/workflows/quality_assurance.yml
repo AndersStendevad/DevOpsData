@@ -21,6 +21,7 @@ jobs:
           python -m pip install -r requirements.txt
 
       - name: Test Api and Web
+        timeout-minutes: 1
         run: |
           ./test_all_containers.sh
 
