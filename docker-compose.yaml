@@ -40,13 +40,13 @@ services:
     ports:
       - "8080:8080"
   
-  # api_test:
-  #   container_name: api_minitwit_test
-  #   build: ./Api
-  #   command: python3 manage.py test .
-  #   depends_on:
-  #     - "api"
-  #     - "database"
+  api_test:
+    container_name: api_minitwit_test
+    build: ./Api
+    command: python3 manage.py test .
+    depends_on:
+      - "api"
+      - "database"
 
 volumes:
   database-data:
