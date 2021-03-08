@@ -22,8 +22,6 @@ services:
       - "api"
     ports:
       - "8000:8000"
-    volumes:
-      - "./Web/itu_minitwit:/itu_minitwit"
 
   web_test:
     container_name: web_minitwit_test
@@ -32,19 +30,15 @@ services:
     depends_on:
       - "database"
       - "api"
-    volumes:
-      - "./Web/itu_minitwit:/itu_minitwit"
 
   api:
     container_name: api_minitwit
     build: ./Api
-    command: /start.sh
+    command: ./start.sh
     depends_on:
       - "database"
     ports:
       - "8080:8080"
-    volumes:
-      - "./Api/minitwitAPI:/minitwitAPI"
   
   api_test:
     container_name: api_minitwit_test
@@ -52,8 +46,6 @@ services:
     command: python3 manage.py test Api/minitwitAPI
     depends_on:
       - "database"
-    volumes:
-      - "./Api/minitwitAPI:/minitwitAPI"
 
 volumes:
   database-data:
