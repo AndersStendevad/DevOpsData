@@ -7,3 +7,5 @@ WORKDIR $HOME/itu_minitwit
 RUN export PYTHONPATH="${PYTHONPATH}:${HOME}/itu_minitwit"
 
 RUN pip3 install -r requirements.txt
+
+

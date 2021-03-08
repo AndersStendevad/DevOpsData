@@ -26,7 +26,7 @@ services:
   web_test:
     container_name: web_minitwit_test
     build: ./Web
-    command: python3 manage.py test Web/itu_minitwit
+    command: python3 manage.py test .
     depends_on:
       - "database"
       - "api"
@@ -43,7 +43,7 @@ services:
   api_test:
     container_name: api_minitwit_test
     build: ./Api
-    command: python3 manage.py test Api/minitwitAPI
+    command: python3 manage.py test .
     depends_on:
       - "database"
 
