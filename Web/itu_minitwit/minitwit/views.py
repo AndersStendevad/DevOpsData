@@ -12,6 +12,14 @@ from hashlib import md5
 from .models import Message, Follower, Profile
 from .forms import SignUpForm, SignInForm, PostForm
 
+# monitoring
+import psutil
+from prometheus_client import Counter, Gauge, Histogram
+
+CPU_GAUGE = Gauge(
+    "minitwit_cpu_load_percent", "Current load of the CPU in percent."
+)
+
 PER_PAGE = 20
 
 def format_datetime(timestamp):
@@ -127,6 +135,7 @@ def login(request):
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(data=request.POST)
+        CPU_GAUGE.set(psutil.cpu_percent())
         if form.is_valid():
             username = form.cleaned_data.get('username')
             email = form.cleaned_data.get('email')

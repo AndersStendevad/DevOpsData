@@ -4,6 +4,7 @@ from minitwit.views import public_timeline, user_timeline, login, register, logo
 
 urlpatterns = [
     path('', public_timeline, name = 'public_timeline'), # Now both '' and /public leads to the same page... a little inconsistent..
+    path("", include("django_prometheus.urls"), name="django-prometheus"),
     path('public/', public_timeline, name = 'public_timeline'),
     path('login/', login, name='login'),
     path('logout/', logout, name='logout'),
