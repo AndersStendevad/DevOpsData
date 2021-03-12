@@ -22,14 +22,6 @@ services:
       - "api"
     ports:
       - "8000:8000"
-
-  web_test:
-    container_name: web_minitwit_test
-    build: ./Web
-    command: [sh, -c, "sleep 60 && python3 manage.py wait_for_db && python3 manage.py test --noinput"]
-    depends_on:
-      - "database"
-
   api:
     container_name: api_minitwit
     build: ./Api
@@ -38,13 +30,5 @@ services:
       - "database"
     ports:
       - "8080:8080"
-
-  api_test:
-    container_name: api_minitwit_test
-    build: ./Api
-    command: [sh, -c, "python3 manage.py wait_for_db && python3 manage.py test --noinput"]
-    depends_on:
-      - "database"
-
 volumes:
   database-data:
