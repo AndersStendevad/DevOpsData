@@ -89,6 +89,9 @@ DATABASES = {
         "PASSWORD": "su",
         "HOST": "database",
         "PORT": "5432",
+        "TEST": {
+            "NAME": "api_test_db",
+        },
     }
 }
 
