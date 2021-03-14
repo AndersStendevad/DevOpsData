@@ -1,8 +1,8 @@
-name: push_to_docker
+name: quality_assurance
 
 on:
   push:
-    branches: [ main ]
+    branches: [ development ]
 
 jobs:
   test_and_deploy_to_dockerhub:
