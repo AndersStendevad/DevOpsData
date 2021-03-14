@@ -41,12 +41,11 @@ services:
   prometheus:
     image: prom/prometheus:v2.1.0
     volumes:
-      - prometheus-data:/etc/prometheus/prometheus.yml
+      - .:/etc/prometheus/
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - 9090:9090
 
 volumes:
-  database-data:
-  prometheus-data:
+  - "database-data"
