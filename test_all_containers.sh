@@ -1,14 +1,10 @@
 #!/bin/bash
 docker-compose build \
 && \
-docker-compose up \
---abort-on-container-exit \
---exit-code-from api_test \
+docker-compose up -d\
 && \
-docker-compose down \
+docker-compose run web sh -c "python3 manage.py wait_for_db && python3 manage.py test --noinput" \
 && \
-docker-compose up \
---abort-on-container-exit \
---exit-code-from web_test \
+docker-compose run api sh -c "python3 manage.py wait_for_db && python3 manage.py test --noinput" \
 && \
 docker-compose down
