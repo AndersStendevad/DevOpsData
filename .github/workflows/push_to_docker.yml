@@ -70,7 +70,7 @@ jobs:
         name: Deploying apps
         uses: appleboy/ssh-action@master
         with:
-            host: 134.209.248.68
+            host: ${{ secrets.HOST }}
             username: root
             key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
             port: 22
