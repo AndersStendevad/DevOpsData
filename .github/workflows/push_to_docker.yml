@@ -13,7 +13,7 @@ jobs:
 
       - name: get version
         run: |
-          version=$(cat ./VERSION)
+          export version="cat VERSION"
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
@@ -53,7 +53,7 @@ jobs:
         with:
           context: ./Api
           push: true
-          tags: andersstendevad/minitwit_api:latest
+          tags: andersstendevad/minitwit_api:$version
       -
         name: Build and push Web
         id: docker_build_web
@@ -61,7 +61,7 @@ jobs:
         with:
           context: ./Web
           push: true
-          tags: andersstendevad/minitwit_web:latest
+          tags: andersstendevad/minitwit_web:$version
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
