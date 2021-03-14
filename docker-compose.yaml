@@ -16,15 +16,16 @@ services:
   web:
     container_name: web_minitwit
     build: ./Web
+    command: python3 manage.py runserver 0.0.0.0:8000
     depends_on:
       - "database"
+      - "api"
     ports:
       - "8000:8000"
-    volumes:
-      - "./Web/itu_minitwit:/itu_minitwit"
   api:
     container_name: api_minitwit
     build: ./Api
+    command: ./start.sh
     depends_on:
       - "database"
       - "prometheus"
@@ -47,5 +48,6 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - 9090:9090
+
 volumes:
   database-data:

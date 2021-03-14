@@ -1,3 +1,4 @@
 #!/bin/bash
-./build_all_images.sh
-docker-compose -f docker-compose.yaml up --remove-orphans
+docker-compose build && \
+docker-compose up && \
+docker-compose down

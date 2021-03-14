@@ -32,7 +32,7 @@ def test_latest():
     url = f"{BASE_URL}/latest"
     response = requests.get(url, headers=HEADERS)
     assert response.ok
-    assert response.json()["latest"] == '1337'
+    assert response.json()["latest"] == "1337"
 
 
 def test_register():
@@ -49,7 +49,7 @@ def test_register():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == '1'
+    assert response.json()["latest"] == "1"
 
 
 def test_create_msg():
@@ -62,7 +62,7 @@ def test_create_msg():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == '2'
+    assert response.json()["latest"] == "2"
 
 
 def test_get_latest_user_msgs():
@@ -82,7 +82,7 @@ def test_get_latest_user_msgs():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == '3'
+    assert response.json()["latest"] == "3"
 
 
 def test_get_latest_msgs():
@@ -101,7 +101,7 @@ def test_get_latest_msgs():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == '4'
+    assert response.json()["latest"] == "4"
 
 
 def test_register_b():
@@ -118,7 +118,7 @@ def test_register_b():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == '5'
+    assert response.json()["latest"] == "5"
 
 
 def test_register_c():
@@ -134,7 +134,7 @@ def test_register_c():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == '6'
+    assert response.json()["latest"] == "6"
 
 
 def test_follow_user():
@@ -161,7 +161,7 @@ def test_follow_user():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == '9'
+    assert response.json()["latest"] == "9"
 
 
 def test_a_unfollows_b():
@@ -185,4 +185,4 @@ def test_a_unfollows_b():
 
     # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
-    assert response.json()["latest"] == '11'
+    assert response.json()["latest"] == "11"

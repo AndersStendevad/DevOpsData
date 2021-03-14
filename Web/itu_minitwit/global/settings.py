@@ -25,7 +25,7 @@ SECRET_KEY = "q_zb@hn2&uc@n^s87mnrvtuou@bmybblog0y(isl4=$mxx76%1"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['157.230.77.141', '139.59.142.18', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ["157.230.77.141", "139.59.142.18", "localhost", "127.0.0.1", "134.209.248.68"]
 
 # Application definition
 
@@ -80,14 +80,17 @@ WSGI_APPLICATION = "global.wsgi.application"
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
- 'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'database_minitwit',
-    'USER': 'superuser',
-    'PASSWORD': 'su',
-    'HOST': 'database',
-    'PORT': '5432',
- }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "database_minitwit",
+        "USER": "superuser",
+        "PASSWORD": "su",
+        "HOST": "database",
+        "PORT": "5432",
+        "TEST": {
+            "NAME": "web_test_db",
+        },
+    }
 }
 
 
