@@ -25,7 +25,7 @@ services:
   api:
     container_name: api_minitwit
     build: ./Api
-    command: /start.sh
+    command: ./start.sh
     depends_on:
       - "database"
       - "prometheus"
