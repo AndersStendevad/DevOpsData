@@ -76,7 +76,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
             host: 134.209.248.68
-            key: ${{ secrets.KEY }}
+            key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
             port: 22
             script:
                 cd DevopsData && ./run_from_docker_hub.sh
