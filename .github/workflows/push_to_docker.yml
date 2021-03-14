@@ -1,6 +1,6 @@
 name: push_to_docker
 
-on: 
+on:
   push:
     branches: [ main ]
 
@@ -65,3 +65,18 @@ jobs:
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+  deploy:
+    name: Deploy my app
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploying apps
+        uses: appleboy/ssh-action@master
+        with:
+            host: ${{ secrets.HOST  }}
+            key: ${{ secrets.KEY }}
+            port: 22
+            script:
+                cd DevopsData && ./run_from_docker_hub.sh
