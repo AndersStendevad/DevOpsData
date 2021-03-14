@@ -75,7 +75,7 @@ jobs:
       - name: Deploying apps
         uses: appleboy/ssh-action@master
         with:
-            host: ${{ secrets.HOST  }}
+            host: 134.209.248.68
             key: ${{ secrets.KEY }}
             port: 22
             script:
