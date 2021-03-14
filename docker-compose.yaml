@@ -22,15 +22,6 @@ services:
       - "api"
     ports:
       - "8000:8000"
-
-  web_test:
-    container_name: web_minitwit_test
-    build: ./Web
-    command: python3 manage.py test .
-    depends_on:
-      - "database"
-      - "api"
-
   api:
     container_name: api_minitwit
     build: ./Api
@@ -47,6 +38,6 @@ services:
     depends_on:
       - "api"
       - "database"
-
+      
 volumes:
   database-data:
