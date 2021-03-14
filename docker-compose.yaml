@@ -32,8 +32,6 @@ services:
       - "grafana"
     ports:
       - "8080:8080"
-    volumes:
-      - "./Api/minitwitAPI:/minitwitAPI"
 
   grafana:
     image: grafana/grafana
