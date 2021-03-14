@@ -66,13 +66,8 @@ jobs:
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-  deploy:
-    name: Deploy my app
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploying apps
+      - 
+        name: Deploying apps
         uses: appleboy/ssh-action@master
         with:
             host: 134.209.248.68
