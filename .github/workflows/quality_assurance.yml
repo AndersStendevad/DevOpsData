@@ -65,3 +65,15 @@ jobs:
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+     - 
+        name: Deploying apps
+        uses: appleboy/ssh-action@master
+        with:
+            host: ${{ secrets.HOST_TEST }}
+            username: root
+            key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
+            port: 22
+            script:
+                cd DevOpsData && sleep 10 && ./test_from_docker_hub.sh
+
