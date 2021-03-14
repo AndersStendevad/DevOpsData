@@ -49,7 +49,7 @@ services:
     ports:
       - 9090:9090
     environment:
-      - HOST_IP=http://157.230.77.141
+      - HOST_IP=http://157.230.77.141:9090
 
 
 volumes:
