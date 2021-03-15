@@ -14,6 +14,14 @@ from .serializers import MessageSerializer, UserSerializer, FollowSerializer
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
+# monitoring
+import psutil
+from prometheus_client import Counter, Gauge, Histogram
+
+CPU_GAUGE = Gauge(
+    "minitwit_cpu_load_percent", "Current load of the CPU in percent."
+)
+
 logger = logging.getLogger(__name__)  # basic logger for debugging
 
 LATEST = 0
@@ -32,6 +40,7 @@ def getProfileObject(username):
 
 def update_latest(self, request):
     global LATEST
+    CPU_GAUGE.set(psutil.cpu_percent())
     try_latest = request.GET.get("latest", -1)
     LATEST = try_latest if try_latest != -1 else LATEST
 

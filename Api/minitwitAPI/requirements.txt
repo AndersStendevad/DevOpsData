@@ -4,3 +4,6 @@ psycopg2-binary
 pytest
 djangorestframework
 djangorestframework-jsonapi
+django-prometheus
+prometheus_client
+psutil
