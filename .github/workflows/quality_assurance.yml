@@ -5,7 +5,7 @@ on:
     branches: [ development ]
 
 jobs:
-  test_and_deploy_to_dockerhub:
+  quality_assurance:
     runs-on: ubuntu-latest
 
     steps:
