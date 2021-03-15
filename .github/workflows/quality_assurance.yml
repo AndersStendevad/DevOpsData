@@ -75,5 +75,5 @@ jobs:
             key: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
             port: 22
             script:
-                cd DevOpsData && sleep 10 && ./test_from_docker_hub.sh
+                cd DevOpsData_deployment && sleep 10 && ./test_from_docker_hub.sh
 
