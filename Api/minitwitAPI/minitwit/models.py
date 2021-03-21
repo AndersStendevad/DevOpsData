@@ -7,7 +7,7 @@ class Profile(AbstractUser):
         db_table = "profiles"
 
 
-class Follower(ExportModelOperationsMixin("dataset"), models.Model):
+class Follower(ExportModelOperationsMixin("follower"), models.Model):
     source_user = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name="who_id"
     )
@@ -22,7 +22,7 @@ class Follower(ExportModelOperationsMixin("dataset"), models.Model):
         return f"follow from user id: {self.source_user} to user id: {self.target_user}"
 
 
-class Message(ExportModelOperationsMixin("dataset"), models.Model):
+class Message(ExportModelOperationsMixin("message"), models.Model):
     author = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name="author_id"
     )
