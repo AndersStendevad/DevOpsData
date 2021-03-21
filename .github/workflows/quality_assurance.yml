@@ -36,7 +36,7 @@ jobs:
 
       - name: Run xenon on code
         run: |
-          xenon -b A -m A -a A Api 
+          xenon -b B -m B -a B Api 
 
       -
         name: Set up QEMU
