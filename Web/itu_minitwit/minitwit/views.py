@@ -16,9 +16,7 @@ from .forms import SignUpForm, SignInForm, PostForm
 import psutil
 from prometheus_client import Counter, Gauge, Histogram
 
-CPU_GAUGE = Gauge(
-    "minitwit_cpu_load_percent", "Current load of the CPU in percent."
-)
+CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
 
 PER_PAGE = 20
 
@@ -91,9 +89,14 @@ def timeline(request):
     user = Profile.objects.get(username=request.user.username)
     user_follows = Follower.objects.filter(source_user=user)
     user_follows_user = [i.target_user for i in user_follows] + [user]
-    context = {'user_logged_in': user_logged_in, 'timeline': True, 'public_timeline': False, 'user_timeline': False}
-    if request.method == 'POST':
-        print('request is post')
+    context = {
+        "user_logged_in": user_logged_in,
+        "timeline": True,
+        "public_timeline": False,
+        "user_timeline": False,
+    }
+    if request.method == "POST":
+        print("request is post")
         form = PostForm(data=request.POST)
         if form.is_valid():
             new_message = Message(author=user, content=form.cleaned_data.get("content"))
@@ -126,8 +129,10 @@ def user_timeline(request, username):
         )
         if request.user.username == profile_user.username:
             current_user = True
-            
-    message_objs= Message.objects.filter(author = profile_user).order_by("-publication_date")[:PER_PAGE]
+
+    message_objs = Message.objects.filter(author=profile_user).order_by(
+        "-publication_date"
+    )[:PER_PAGE]
     messages = get_messages(message_objs)
     context = {
         "messages": messages,
@@ -161,7 +166,7 @@ def login(request):
             return render(request, "minitwit/login.html", {"form": form})
     else:
         form = SignInForm()
-        return render(request, 'minitwit/login.html', {'form': form})
+        return render(request, "minitwit/login.html", {"form": form})
 
 
 def register(request):
@@ -175,7 +180,11 @@ def register(request):
             user = Profile(username=username, email=email)
             user.set_password(password)
             user.save()
-            flash_messages.add_message(request, flash_messages.SUCCESS, "You were successfully registered and can login now")
+            flash_messages.add_message(
+                request,
+                flash_messages.SUCCESS,
+                "You were successfully registered and can login now",
+            )
             form = SignUpForm()
             return redirect("/login/")
         else:

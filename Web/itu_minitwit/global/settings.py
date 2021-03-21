@@ -25,7 +25,13 @@ SECRET_KEY = "q_zb@hn2&uc@n^s87mnrvtuou@bmybblog0y(isl4=$mxx76%1"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["157.230.77.141", "139.59.142.18", "localhost", "127.0.0.1", "134.209.248.68"]
+ALLOWED_HOSTS = [
+    "157.230.77.141",
+    "139.59.142.18",
+    "localhost",
+    "127.0.0.1",
+    "134.209.248.68",
+]
 
 # Application definition
 
@@ -49,7 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django_prometheus.middleware.PrometheusAfterMiddleware',
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "global.urls"

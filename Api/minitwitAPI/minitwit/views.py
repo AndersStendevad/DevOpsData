@@ -18,9 +18,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import psutil
 from prometheus_client import Counter, Gauge, Histogram
 
-CPU_GAUGE = Gauge(
-    "minitwit_cpu_load_percent", "Current load of the CPU in percent."
-)
+CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
 
 logger = logging.getLogger(__name__)  # basic logger for debugging
 

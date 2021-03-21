@@ -31,8 +31,12 @@ jobs:
 
       - name: Run black on code
         run: |
-          black --check .
-        continue-on-error: True
+          black --check . --exclude '0001_initial.py'
+        continue-on-error: False
+
+      - name: Run xenon on code
+        run: |
+          xenon -b B -m B -a B Api && xenon -b B -m B -a B Web
 
       -
         name: Set up QEMU
@@ -76,4 +80,3 @@ jobs:
             port: 22
             script:
                 cd DevOpsData_deployment && sleep 10 && ./test_from_docker_hub.sh
-
