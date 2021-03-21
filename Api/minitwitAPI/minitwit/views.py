@@ -16,11 +16,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # monitoring
 import psutil
-from prometheus_client import Summary, Counter, Gauge, Histogram
-import time
+from prometheus_client import Counter, Gauge, Histogram
 
 CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
-REQUEST_TIME = Summary("request_processing_seconds", "Time spent processing request")
 
 logger = logging.getLogger(__name__)  # basic logger for debugging
 
@@ -52,7 +50,6 @@ def LatestView(self):
 
 
 class MessagesView(APIView):
-    @REQUEST_TIME.time()
     def get(self, request):
         update_latest(self, request)
         auth = not_req_from_simulator(request)
@@ -73,7 +70,6 @@ class MessagesView(APIView):
 
 
 class UserMessagesView(APIView):
-    @REQUEST_TIME.time()
     def get(self, request, username):
         update_latest(self, request)
         auth = not_req_from_simulator(request)
@@ -98,7 +94,6 @@ class UserMessagesView(APIView):
         else:
             return HttpResponse(status=404)
 
-    @REQUEST_TIME.time()
     def post(self, request, username):
         update_latest(self, request)
         auth = not_req_from_simulator(request)
@@ -117,7 +112,6 @@ class UserMessagesView(APIView):
 
 
 class RegistrationView(APIView):
-    @REQUEST_TIME.time()
     def post(self, request):
         update_latest(self, request)
         request_data = json.loads(request.body)
@@ -146,7 +140,6 @@ class RegistrationView(APIView):
 
 
 class UserFollowersView(APIView):
-    @REQUEST_TIME.time()
     def get(self, request, username):
         update_latest(self, request)
         auth = not_req_from_simulator(request)
@@ -165,7 +158,6 @@ class UserFollowersView(APIView):
         else:
             return HttpResponse(status=404)
 
-    @REQUEST_TIME.time()
     def post(self, request, username):
         update_latest(self, request)
         user = Profile.objects.filter(username=username).first()
