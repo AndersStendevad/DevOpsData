@@ -34,6 +34,10 @@ jobs:
           black --check .
         continue-on-error: True
 
+      - name: Run xenon on code
+        run: |
+          xenon -b A -m A -a A Api 
+
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -76,4 +80,3 @@ jobs:
             port: 22
             script:
                 cd DevOpsData_deployment && sleep 10 && ./test_from_docker_hub.sh
-
