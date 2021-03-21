@@ -2,12 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django_prometheus.models import ExportModelOperationsMixin
 
-class Profile(AbstractUser):
+class Profile(ExportModelOperationsMixin("profile"), AbstractUser):
     class Meta:
         db_table = "profiles"
 
 
-class Follower(ExportModelOperationsMixin("dataset"), models.Model):
+class Follower(ExportModelOperationsMixin("follower"), models.Model):
     source_user = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name="who_id"
     )
@@ -22,7 +22,7 @@ class Follower(ExportModelOperationsMixin("dataset"), models.Model):
         return f"follow from user id: {self.source_user} to user id: {self.target_user}"
 
 
-class Message(ExportModelOperationsMixin("dataset"), models.Model):
+class Message(ExportModelOperationsMixin("message"), models.Model):
     author = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name="author_id"
     )
