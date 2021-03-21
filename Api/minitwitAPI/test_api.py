@@ -35,7 +35,9 @@ class SimpleTest(TestCase):
         return response
 
     def latest_msg_user(self, user, no, latest):
-        response = self.client.get(f"/msgs/{user}?no={no}&latest={latest}", **self.HEADERS)
+        response = self.client.get(
+            f"/msgs/{user}?no={no}&latest={latest}", **self.HEADERS
+        )
         return response
 
     def latest_msg(self, no, latest):
@@ -173,7 +175,7 @@ class SimpleTest(TestCase):
         self.register_user("c", "c@c.c", "c", 6)
         self.follow_user("a", "b", 7)
         self.follow_user("a", "c", 8)
-        
+
         response = self.unfollow_user("a", "b", 10)
         self.assertEqual(response.status_code, 204)
 

@@ -12,14 +12,16 @@ from minitwit.views import (
 
 
 urlpatterns = [
-    path('', public_timeline, name = 'public_timeline'), # Now both '' and /public leads to the same page... a little inconsistent..
+    path(
+        "", public_timeline, name="public_timeline"
+    ),  # Now both '' and /public leads to the same page... a little inconsistent..
     path("", include("django_prometheus.urls"), name="django-prometheus"),
-    path('public/', public_timeline, name = 'public_timeline'),
-    path('login/', login, name='login'),
-    path('logout/', logout, name='logout'),
-    path('register/', register, name='register'),
-    path('timeline/', timeline, name = 'timeline'),
-    path('<username>/follow', follow_user, name = 'follow_user'),
-    path('<username>/unfollow', unfollow_user, name = 'unfollow_user'),
-    path('<username>/', user_timeline, name = 'user_timeline'),
+    path("public/", public_timeline, name="public_timeline"),
+    path("login/", login, name="login"),
+    path("logout/", logout, name="logout"),
+    path("register/", register, name="register"),
+    path("timeline/", timeline, name="timeline"),
+    path("<username>/follow", follow_user, name="follow_user"),
+    path("<username>/unfollow", unfollow_user, name="unfollow_user"),
+    path("<username>/", user_timeline, name="user_timeline"),
 ]

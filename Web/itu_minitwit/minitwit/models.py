@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django_prometheus.models import ExportModelOperationsMixin
 
+
 class Profile(ExportModelOperationsMixin("profile"), AbstractUser):
     class Meta:
         db_table = "profiles"
