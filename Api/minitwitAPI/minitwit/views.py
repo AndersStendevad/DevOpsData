@@ -18,6 +18,22 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import psutil
 from prometheus_client import Counter, Gauge, Histogram
 
+# Logging
+import structlog
+
+logger = structlog.get_logger(__name__)
+
+
+def func(request):
+    logger.debug("debug message", bar="Buz")
+    logger.info("info message", bar="Buz")
+    logger.warning("warning message", bar="Buz")
+    logger.error("error message", bar="Buz")
+    logger.critical("critical message", bar="Buz")
+
+    return HttpResponse("success")
+
+
 CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
 
 logger = logging.getLogger(__name__)  # basic logger for debugging
