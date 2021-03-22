@@ -187,7 +187,7 @@ LOGGING = {
         },
         "minitwit": {
             "handlers": ["console", "flat_line_file", "json_file"],
-            "level": "INFO",
+            "level": "'DEBUG",
         },
     },
 }
