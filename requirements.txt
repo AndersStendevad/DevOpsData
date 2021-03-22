@@ -7,6 +7,7 @@ pytest
 djangorestframework
 djangorestframework-jsonapi
 django-prometheus
+django-structlog
 prometheus_client
 psutil
 xenon
