@@ -23,6 +23,8 @@ logger = structlog.get_logger(__name__)
 
 
 CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
+TOTAL_SIGN_INS = Counter('total_sign_ins', 'Increments for every sign in')
+TOTAL_PROFILE_VISITS = Counter('total_profile_visits', 'Increments for every visit to user profile')
 
 PER_PAGE = 20
 
@@ -135,7 +137,8 @@ def user_timeline(request, username):
         )
         if request.user.username == profile_user.username:
             current_user = True
-
+    
+    TOTAL_PROFILE_VISITS.inc()
     message_objs = Message.objects.filter(author=profile_user).order_by(
         "-publication_date"
     )[:PER_PAGE]
@@ -171,6 +174,7 @@ def login(request):
         else:
             return render(request, "minitwit/login.html", {"form": form})
     else:
+        TOTAL_SIGN_INS.inc()
         form = SignInForm()
         return render(request, "minitwit/login.html", {"form": form})
 
