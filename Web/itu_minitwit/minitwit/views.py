@@ -23,8 +23,8 @@ logger = structlog.get_logger(__name__)
 
 
 CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
-TOTAL_SIGN_INS = Counter('total_sign_ins', 'Increments for every sign in')
-TOTAL_PROFILE_VISITS = Counter('total_profile_visits', 'Increments for every visit to user profile')
+TOTAL_SIGN_INS = Counter("total_sign_ins", "Increments for every sign in")
+TOTAL_PROFILE_VISITS = Counter("total_profile_visits", "Increments for every visit to user profile")
 
 PER_PAGE = 20
 
