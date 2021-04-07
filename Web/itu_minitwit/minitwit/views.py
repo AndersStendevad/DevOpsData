@@ -27,6 +27,7 @@ TOTAL_SIGN_INS = Counter("total_sign_ins", "Increments for every sign in")
 TOTAL_PROFILE_VISITS = Counter(
     "total_profile_visits", "Increments for every visit to user profile"
 )
+TOTAL_ACTIVE_USERS = Gauge("total_active_users", "How many are online.")
 
 PER_PAGE = 20
 
@@ -170,6 +171,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user:
                 auth_login(request, user)
+                TOTAL_ACTIVE_USERS.inc()
                 return redirect("/timeline/")
             else:
                 return render(request, "minitwit/login.html", {"form": form})
@@ -208,4 +210,5 @@ def register(request):
 
 def logout(request):
     logout_user(request)
+    TOTAL_ACTIVE_USERS.dec()
     return redirect("/public")
