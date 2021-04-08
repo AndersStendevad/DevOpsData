@@ -8,6 +8,4 @@ django-prometheus
 django-structlog
 prometheus_client
 psutil
-time
 threading
-
