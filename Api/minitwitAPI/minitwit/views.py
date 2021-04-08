@@ -53,9 +53,7 @@ def thread_function():
         DISK_GAUGE.set(disk.percent)
         time.sleep(5)
 
-
 _thread.start_new_thread(thread_function, ())
-
 
 def not_req_from_simulator(request):
     from_simulator = request.headers.get("Authorization")
