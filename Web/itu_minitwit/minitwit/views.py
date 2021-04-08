@@ -36,7 +36,8 @@ PER_PAGE = 20
 
 def system_stats():
     CPU_GAUGE.set(psutil.cpu_percent())
-    MEMORY_GAUGE.set(psutil.memory_percent())
+    memory = psutil.virtual_memory()
+    MEMORY_GAUGE.set(memory.percent)
     disk = psutil.disk_usage("/")
     DISK_GAUGE.set(disk.percent)
 

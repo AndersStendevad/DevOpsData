@@ -15,6 +15,7 @@ from .serializers import MessageSerializer, UserSerializer, FollowSerializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # monitoring
+import os
 import psutil
 from prometheus_client import Counter, Gauge, Histogram
 
@@ -40,7 +41,8 @@ LATEST = 0
 
 def system_stats():
     CPU_GAUGE.set(psutil.cpu_percent())
-    MEMORY_GAUGE.set(psutil.memory_percent())
+    memory = psutil.virtual_memory()
+    MEMORY_GAUGE.set(memory.percent)
     disk = psutil.disk_usage("/")
     DISK_GAUGE.set(disk.percent)
 
