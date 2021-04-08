@@ -45,15 +45,12 @@ def thread_function():
     global CPU_GAUGE
     global MEMORY_GAUGE
     global DISK_GAUGE
-    while True:
-        CPU_GAUGE.set(psutil.cpu_percent())
-        memory = psutil.virtual_memory()
-        MEMORY_GAUGE.set(memory.percent)
-        disk = psutil.disk_usage("/")
-        DISK_GAUGE.set(disk.percent)
-        time.sleep(5)
+    CPU_GAUGE.set(psutil.cpu_percent())
+    memory = psutil.virtual_memory()
+    MEMORY_GAUGE.set(memory.percent)
+    disk = psutil.disk_usage("/")
+    DISK_GAUGE.set(disk.percent)
 
-_thread.start_new_thread(thread_function, ())
 
 def not_req_from_simulator(request):
     from_simulator = request.headers.get("Authorization")
@@ -68,6 +65,7 @@ def getProfileObject(username):
 
 def update_latest(self, request):
     global LATEST
+    _thread.start_new_thread(thread_function, ())
     try_latest = request.GET.get("latest", -1)
     LATEST = try_latest if try_latest != -1 else LATEST
 
