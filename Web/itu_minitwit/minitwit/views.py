@@ -27,6 +27,7 @@ logger = structlog.get_logger(__name__)
 CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
 MEMORY_GAUGE = Gauge("minitwit_memory_gauge", "Current memory load %.")
 DISK_GAUGE = Gauge("minitwit_disk_gauge", "Current disk usage.")
+
 TOTAL_SIGN_INS = Counter("total_sign_ins", "Increments for every sign in")
 TOTAL_PROFILE_VISITS = Counter(
     "total_profile_visits", "Increments for every visit to user profile"
@@ -37,15 +38,14 @@ PER_PAGE = 20
 
 
 def thread_function():
+    global CPU_GAUGE
+    global MEMORY_GAUGE
+    global DISK_GAUGE
     CPU_GAUGE.set(psutil.cpu_percent())
     memory = psutil.virtual_memory()
     MEMORY_GAUGE.set(memory.percent)
     disk = psutil.disk_usage("/")
     DISK_GAUGE.set(disk.percent)
-    time.sleep(5)
-
-
-_thread.start_new_thread(thread_function, ())
 
 
 def format_datetime(timestamp):
@@ -110,6 +110,7 @@ def follow_user(request, username):
 
 
 def timeline(request):
+    _thread.start_new_thread(thread_function, ())
     user_logged_in = request.user.is_authenticated
     if not user_logged_in:
         return redirect("/public/")
@@ -143,6 +144,7 @@ def timeline(request):
 
 
 def user_timeline(request, username):
+    _thread.start_new_thread(thread_function, ())
     if not Profile.objects.filter(username=username).exists():
         return HttpResponse(404)
     profile_user = Profile.objects.get(username=username)
@@ -176,6 +178,7 @@ def user_timeline(request, username):
 
 
 def login(request):
+    _thread.start_new_thread(thread_function, ())
     if request.user.is_authenticated:
         return redirect("/")
 
@@ -200,6 +203,7 @@ def login(request):
 
 
 def register(request):
+    _thread.start_new_thread(thread_function, ())
     if request.method == "POST":
         form = SignUpForm(data=request.POST)
         psutil.net_io_counters(pernic=True)
@@ -225,6 +229,7 @@ def register(request):
 
 
 def logout(request):
+    _thread.start_new_thread(thread_function, ())
     logout_user(request)
     TOTAL_ACTIVE_USERS.dec()
     return redirect("/public")
