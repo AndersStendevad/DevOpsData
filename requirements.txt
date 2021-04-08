@@ -11,4 +11,3 @@ django-structlog
 prometheus_client
 psutil
 xenon
-threading

@@ -17,7 +17,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # monitoring
 import psutil
 from prometheus_client import Counter, Gauge, Histogram
-import threading
+import _thread
 import time
 
 # Logging
@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)  # basic logger for debugging
 LATEST = 0
 
 
-def thread_function(name):
+def thread_function():
     CPU_GAUGE.set(psutil.cpu_percent())
     memory = psutil.virtual_memory()
     MEMORY_GAUGE.set(memory.percent)
@@ -49,8 +49,7 @@ def thread_function(name):
     time.sleep(5)
 
 
-stats = threading.Thread(target=thread_function, args=(1,))
-stats.start()
+_thread.start_new_thread(thread_function, ())
 
 
 def not_req_from_simulator(request):

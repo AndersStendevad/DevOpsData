@@ -15,7 +15,7 @@ from .forms import SignUpForm, SignInForm, PostForm
 # monitoring
 import psutil
 from prometheus_client import Counter, Gauge, Histogram
-import threading
+import _thread
 import time
 
 # Logging
@@ -36,7 +36,7 @@ TOTAL_ACTIVE_USERS = Gauge("total_active_users", "How many are online.")
 PER_PAGE = 20
 
 
-def thread_function(name):
+def thread_function():
     CPU_GAUGE.set(psutil.cpu_percent())
     memory = psutil.virtual_memory()
     MEMORY_GAUGE.set(memory.percent)
@@ -45,8 +45,7 @@ def thread_function(name):
     time.sleep(5)
 
 
-stats = threading.Thread(target=thread_function, args=(1,))
-stats.start()
+_thread.start_new_thread(thread_function, ())
 
 
 def format_datetime(timestamp):
