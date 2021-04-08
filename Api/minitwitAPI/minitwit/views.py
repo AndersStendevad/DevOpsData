@@ -25,10 +25,24 @@ logger = structlog.get_logger(__name__)
 
 
 CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
+MEMORY_GAUGE = Gauge("minitwit_memory_gauge", "Current memory load %.")
+DISK_GAUGE = Gauge("minitwit_disk_gauge", "Current disk usage.")
+TOTAL_SIGN_INS = Counter("total_sign_ins", "Increments for every sign in")
+TOTAL_PROFILE_VISITS = Counter(
+    "total_profile_visits", "Increments for every visit to user profile"
+)
+TOTAL_ACTIVE_USERS = Gauge("total_active_users", "How many are online.")
 
 logger = logging.getLogger(__name__)  # basic logger for debugging
 
 LATEST = 0
+
+
+def system_stats():
+    CPU_GAUGE.set(psutil.cpu_percent())
+    MEMORY_GAUGE.set(psutil.memory_percent())
+    disk = psutil.disk_usage("/")
+    DISK_GAUGE.set(disk.percent)
 
 
 def not_req_from_simulator(request):
@@ -44,7 +58,7 @@ def getProfileObject(username):
 
 def update_latest(self, request):
     global LATEST
-    CPU_GAUGE.set(psutil.cpu_percent())
+    system_stats()
     try_latest = request.GET.get("latest", -1)
     LATEST = try_latest if try_latest != -1 else LATEST
 

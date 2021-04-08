@@ -23,6 +23,8 @@ logger = structlog.get_logger(__name__)
 
 
 CPU_GAUGE = Gauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.")
+MEMORY_GAUGE = Gauge("minitwit_memory_gauge", "Current memory load %.")
+DISK_GAUGE = Gauge("minitwit_disk_gauge", "Current disk usage.")
 TOTAL_SIGN_INS = Counter("total_sign_ins", "Increments for every sign in")
 TOTAL_PROFILE_VISITS = Counter(
     "total_profile_visits", "Increments for every visit to user profile"
@@ -30,6 +32,13 @@ TOTAL_PROFILE_VISITS = Counter(
 TOTAL_ACTIVE_USERS = Gauge("total_active_users", "How many are online.")
 
 PER_PAGE = 20
+
+
+def system_stats():
+    CPU_GAUGE.set(psutil.cpu_percent())
+    MEMORY_GAUGE.set(psutil.memory_percent())
+    disk = psutil.disk_usage("/")
+    DISK_GAUGE.set(disk.percent)
 
 
 def format_datetime(timestamp):
@@ -46,6 +55,7 @@ def gravatar_url(email, size=50):
 
 
 def get_messages(message_objs):
+    system_stats()
     messages = []
     for m in message_objs:
         messages.append(
@@ -60,6 +70,7 @@ def get_messages(message_objs):
 
 
 def public_timeline(request):
+    system_stats()
     user_logged_in = request.user.is_authenticated
     message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
@@ -78,6 +89,7 @@ def public_timeline(request):
 
 
 def unfollow_user(request, username):
+    system_stats()
     profile_user = Profile.objects.get(username=username)
     follower = Follower.objects.filter(
         source_user=request.user, target_user=profile_user
@@ -87,6 +99,7 @@ def unfollow_user(request, username):
 
 
 def follow_user(request, username):
+    system_stats()
     profile_user = Profile.objects.get(username=username)
     follower = Follower(source_user=request.user, target_user=profile_user)
     follower.save()
@@ -94,6 +107,7 @@ def follow_user(request, username):
 
 
 def timeline(request):
+    system_stats()
     user_logged_in = request.user.is_authenticated
     if not user_logged_in:
         return redirect("/public/")
@@ -127,6 +141,7 @@ def timeline(request):
 
 
 def user_timeline(request, username):
+    system_stats()
     if not Profile.objects.filter(username=username).exists():
         return HttpResponse(404)
     profile_user = Profile.objects.get(username=username)
@@ -160,6 +175,7 @@ def user_timeline(request, username):
 
 
 def login(request):
+    system_stats()
     if request.user.is_authenticated:
         return redirect("/")
 
@@ -184,9 +200,10 @@ def login(request):
 
 
 def register(request):
+    system_stats()
     if request.method == "POST":
         form = SignUpForm(data=request.POST)
-        CPU_GAUGE.set(psutil.cpu_percent())
+        psutil.net_io_counters(pernic=True)
         if form.is_valid():
             username = form.cleaned_data.get("username")
             email = form.cleaned_data.get("email")
@@ -209,6 +226,7 @@ def register(request):
 
 
 def logout(request):
+    system_stats()
     logout_user(request)
     TOTAL_ACTIVE_USERS.dec()
     return redirect("/public")
