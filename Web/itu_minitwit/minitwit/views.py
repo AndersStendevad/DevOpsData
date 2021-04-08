@@ -49,7 +49,9 @@ def thread_function():
         DISK_GAUGE.set(disk.percent)
         time.sleep(5)
 
+
 _thread.start_new_thread(thread_function, ())
+
 
 def format_datetime(timestamp):
     """Format a timestamp for display."""
