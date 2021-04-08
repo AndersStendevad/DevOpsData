@@ -1,3 +1,4 @@
+six
 django
 werkzeug
 psycopg2-binary

@@ -1,3 +1,4 @@
+six
 django
 psycopg2-binary
 pytest
