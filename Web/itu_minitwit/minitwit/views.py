@@ -15,6 +15,8 @@ from .forms import SignUpForm, SignInForm, PostForm
 # monitoring
 import psutil
 from prometheus_client import Counter, Gauge, Histogram
+import threading
+import time
 
 # Logging
 import structlog
@@ -34,12 +36,17 @@ TOTAL_ACTIVE_USERS = Gauge("total_active_users", "How many are online.")
 PER_PAGE = 20
 
 
-def system_stats():
+def thread_function(name):
     CPU_GAUGE.set(psutil.cpu_percent())
     memory = psutil.virtual_memory()
     MEMORY_GAUGE.set(memory.percent)
     disk = psutil.disk_usage("/")
     DISK_GAUGE.set(disk.percent)
+    time.sleep(5)
+
+
+stats = threading.Thread(target=thread_function, args=(1,))
+stats.start()
 
 
 def format_datetime(timestamp):
@@ -56,7 +63,6 @@ def gravatar_url(email, size=50):
 
 
 def get_messages(message_objs):
-    system_stats()
     messages = []
     for m in message_objs:
         messages.append(
@@ -71,7 +77,6 @@ def get_messages(message_objs):
 
 
 def public_timeline(request):
-    system_stats()
     user_logged_in = request.user.is_authenticated
     message_objs = Message.objects.order_by("-publication_date")[:PER_PAGE]
     messages = get_messages(message_objs)
@@ -90,7 +95,6 @@ def public_timeline(request):
 
 
 def unfollow_user(request, username):
-    system_stats()
     profile_user = Profile.objects.get(username=username)
     follower = Follower.objects.filter(
         source_user=request.user, target_user=profile_user
@@ -100,7 +104,6 @@ def unfollow_user(request, username):
 
 
 def follow_user(request, username):
-    system_stats()
     profile_user = Profile.objects.get(username=username)
     follower = Follower(source_user=request.user, target_user=profile_user)
     follower.save()
@@ -108,7 +111,6 @@ def follow_user(request, username):
 
 
 def timeline(request):
-    system_stats()
     user_logged_in = request.user.is_authenticated
     if not user_logged_in:
         return redirect("/public/")
@@ -142,7 +144,6 @@ def timeline(request):
 
 
 def user_timeline(request, username):
-    system_stats()
     if not Profile.objects.filter(username=username).exists():
         return HttpResponse(404)
     profile_user = Profile.objects.get(username=username)
@@ -176,7 +177,6 @@ def user_timeline(request, username):
 
 
 def login(request):
-    system_stats()
     if request.user.is_authenticated:
         return redirect("/")
 
@@ -201,7 +201,6 @@ def login(request):
 
 
 def register(request):
-    system_stats()
     if request.method == "POST":
         form = SignUpForm(data=request.POST)
         psutil.net_io_counters(pernic=True)
@@ -227,7 +226,6 @@ def register(request):
 
 
 def logout(request):
-    system_stats()
     logout_user(request)
     TOTAL_ACTIVE_USERS.dec()
     return redirect("/public")

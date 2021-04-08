@@ -15,9 +15,10 @@ from .serializers import MessageSerializer, UserSerializer, FollowSerializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # monitoring
-import os
 import psutil
 from prometheus_client import Counter, Gauge, Histogram
+import threading
+import time
 
 # Logging
 import structlog
@@ -39,12 +40,17 @@ logger = logging.getLogger(__name__)  # basic logger for debugging
 LATEST = 0
 
 
-def system_stats():
+def thread_function(name):
     CPU_GAUGE.set(psutil.cpu_percent())
     memory = psutil.virtual_memory()
     MEMORY_GAUGE.set(memory.percent)
     disk = psutil.disk_usage("/")
     DISK_GAUGE.set(disk.percent)
+    time.sleep(5)
+
+
+stats = threading.Thread(target=thread_function, args=(1,))
+stats.start()
 
 
 def not_req_from_simulator(request):
@@ -60,7 +66,6 @@ def getProfileObject(username):
 
 def update_latest(self, request):
     global LATEST
-    system_stats()
     try_latest = request.GET.get("latest", -1)
     LATEST = try_latest if try_latest != -1 else LATEST
 
