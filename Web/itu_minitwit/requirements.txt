@@ -1,6 +1,8 @@
+six
 django
 psycopg2-binary
 pytest
 django-prometheus
+django-structlog
 prometheus_client
 psutil
