@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    api.service: web
+  name: web
+  annotations:
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-size-slug: "lb-small"
+spec:
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 8000
+  selector:
+    api.service: web
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    api.service: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      api.service: web
+  template:
+    metadata:
+      labels:
+        api.service: web
+    spec:
+      containers:
+        - args:
+            - python3
+            - manage.py
+            - runserver
+            - 0.0.0.0:8000
+          image: andersstendevad/minitwit_web:latest
+          name: web
+          ports:
+            - containerPort: 8000
+      restartPolicy: Always
+
