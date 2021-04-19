@@ -1,18 +1,27 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: loki-ingress
-  namespace: loki-stack
+  name: all-ingress
+  namespace: minitwit
   annotations:
     kubernets.io/ingress.class: "nginx"
 spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /web
         pathType: Prefix
         backend:
           service:
-            name: loki-grafana
+            name: web
+            port:
+              number: 80
+  - http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: api
             port:
               number: 80

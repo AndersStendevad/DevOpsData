@@ -4,22 +4,21 @@ metadata:
   labels:
     api.service: web
   name: web
-  annotations:
-    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
-    service.beta.kubernetes.io/do-loadbalancer-size-slug: "lb-small"
+  namespace: minitwit
 spec:
   ports:
-    - name: "8000"
-      port: 8000
+    - name: "80"
+      port: 80
       targetPort: 8000
   selector:
     api.service: web
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web
+  namespace: minitwit
   labels:
     api.service: web
 spec:
@@ -43,4 +42,3 @@ spec:
           ports:
             - containerPort: 8000
       restartPolicy: Always
-

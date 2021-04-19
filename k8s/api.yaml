@@ -4,22 +4,25 @@ metadata:
   labels:
     api.service: api
   name: api
+  namespace: minitwit
 spec:
   ports:
-    - name: "8080"
-      port: 8080
+    - name: "80"
+      port: 80
       targetPort: 8080
   selector:
     api.service: api
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api
+  namespace: minitwit
   labels:
     api.service: api
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       api.service: api
@@ -33,5 +36,6 @@ spec:
           - ./start.sh
           image: andersstendevad/minitwit_api:latest
           name: api
+          ports:
+            - containerPort: 8080
       restartPolicy: Always
-
