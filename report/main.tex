@@ -1,0 +1,154 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+ 
+\documentclass[12pt]{article}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\usepackage{todonotes}
+\usepackage[margin=2cm]{geometry} 
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{ref.bib}
+\usepackage[]{quoting}
+\usepackage{listings}[language=C]
+\usepackage{xcolor}
+\usepackage{float}
+
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codered}{rgb}{0.64, 0.03, 0.22}
+\definecolor{backcolour}{rgb}{0.9,0.9,0.9}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codered},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codered},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[english]{babel} %Castellanización
+\usepackage[T1]{fontenc} %escribe lo del teclado
+\usepackage[utf8]{inputenc} %Reconoce algunos símbolos
+\usepackage{lmodern} %optimiza algunas fuentes
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+\usepackage{hyperref} % Uso de links
+ \hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!red
+}
+
+\begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+\title{Minitwit Report \\
+DevOps \\
+BSDSESM1KU \\
+(Data Science)}
+
+\author{Anders Stendevald (), Anna Reisz, (reis@itu.dk), Edi Begovic (), Gergo Koncz (geko@itu.dk)\\
+}
+
+\maketitle
+\clearpage
+
+\section{System's Perspective}
+
+
+
+A description and illustration of the:
+
+Design of your ITU-MiniTwit systems
+Architecture of your ITU-MiniTwit systems
+All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages.
+That is, list and briefly describe all technologies and tools you applied and depend on.
+Important interactions of subsystems
+Finally, describe the current state of your systems, for example using results of static analysis and quality assessment systems.
+Double check that for all the weekly tasks (those in the end of the lecture notes) you include the corresponding information.
+
+\subsection{Technology stack}
+[write descriptions here]
+Docker
+Django
+Prometheus
+Grafana
+Filebeat
+Elasticsearch
+Kibana
+
+
+\subsection{CI-CD pipeline}
+We have decided to use GitHub actions to orchestrate continuous integration and development. We have found that this technology stack works inherently well with development using GitHub which speeds up development in general. (Trying to make it work with Travis or Jenkins for instance, involved connecting multiple technologies, which brought some unforeseen issues.) GitHub enforced a DevOps-thinking, that proved useful when we needed to integrate more technologies on top of our existing stack (eg. logging)
+
+We have implemented two "actions". One functions as quality assurance. Every time we merge a fix-branch/feature branch into the development branch we  run some test scripts and perform linting. This script also "deploys" our project to a "development server" where we can and see how it works with the latest changes without risking downtime on the real server (where the simulator was sending data).
+
+The second "action" is used for deployment. In essence it works the same way, but it is triggered when we push code to the main branch and it deploys our code to the real server. This step also includes creating a new release.
+
+\subsection{Current state of the system}
+static code analysis (we're)
+
+\subsection{License}
+After careful inspection of our dependencies' licenses we have decided to use GPL 3 license. This is largely because one of our dependencies have the same license which doesn't allow us to use a more open license such as MIT, which we would otherwise have preferred.
+
+
+
+\section{Process' perspective}
+A description and illustration of:
+
+How do you interact as developers?
+How is the team organized?
+A complete description of stages and tools included in the CI/CD chains.
+That is, including deployment and release of your systems.
+Organization of your repositor(ies).
+That is, either the structure of of mono-repository or organization of artifacts across repositories.
+In essence, it has to be be clear what is stored where and why.
+Applied branching strategy.
+Applied development process and tools supporting it
+For example, how did you use issues, Kanban boards, etc. to organize open tasks
+How do you monitor your systems and what precisely do you monitor?
+What do you log in your systems and how do you aggregate logs?
+Brief results of the security assessment.
+Applied strategy for scaling and load balancing.
+In essence it has to be clear how code or other artifacts come from idea into the running system and everything that happens on the way.
+
+\section{Lessons Learned Perspective}
+Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
+
+evolution and refactoring
+operation, and
+maintenance
+of your ITU-MiniTwit systems. Link back to respective commit messages, issues, tickets, etc. to illustrate these.
+
+Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
+
+\subsection{Kubernetes and its drawbacks}
+Doring our final phases of development, we decided to adopt kubernetes as our platform. We made this decision on the promise of rollover deployments, load balancing, centralised logging and horizontal scaling. This move seemed straight forward, especially after we had containerised the entire stack of the application and supporting layers. What we would gain is kind of the endgame of DevOps. Having infrastructure as code and deployments without having to rely on an SSH connection even for automated deployments. With all the promises of kubernetes it might be confusing as to why we ended up not using kubernetes in the end.
+\\\\
+While every component worked fine internally and individually, we had problems configuring the incoming connections and putting at all together. You have to adhear to very strict and secure configurations with the network and load balancing when yous setup the cluster. This is Because kubernetes is configured for security between layers and containers, with specific containers for handling and diverting connections. Therefore opening up a connection to the outside world is simply not possible with a one line command, like you would do on a normal server.
+\\\\
+Even though every container has its own internal cluster IP, you cannot just use that IP to connect to a container long term. Cluster IPs are like workplaces with flowing seating. Today your API might have have IP A, but tomorrow it might be IP Z. To solve this problem you have labels on containers and other containers with selectors. This makes it possible for the selectors to figure out the cluster IPs of containers with the right labels. 
+\\\\
+The takeaway is that you cannot hack your way to a small deployment of kubernetes. In the end the only way to configure kubernetes is to have Different layers with Pods, Deployments, Services, Loadbalancers and Namespaces. And this is without the complexity of Floating IPs and the setup that makes that work with loadbalancers. This is typically done by the cloud provider. And for our project that would mean that we either needed to pay 10\$ a month for each External IP, or that we need to configure an Ingress, that needed to work with the kubernetes setup. This ultimatly was the final draw for us before we decided to stop our venture into kubernetes.   
+
+
+\end{document}
