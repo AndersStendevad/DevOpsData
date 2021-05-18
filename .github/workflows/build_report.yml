@@ -1,0 +1,14 @@
+
+name: Build LaTeX report
+
+on:
+  push:
+    branches: [ report, main ]
+
+jobs:
+  -name: Build LaTeX report
+  runs-on: ubuntu-latest
+  uses: xu-cheng/latex-action@v2
+  with:
+  working_directory: ./report/
+    root_file: main.tex
