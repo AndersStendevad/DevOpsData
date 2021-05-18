@@ -14,7 +14,8 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: report/main.tex
+          root_file: main.tex
+          working_directory: report/
 
       - name: Commit & Push changes
         uses: actions-js/push@master
@@ -24,4 +25,4 @@ jobs:
           message: 'publish report.pdf'
           force: 'true'
           directory: ./report
-          author_email: edibegovic@itu.dk
+          author_email: edibegovic@gmail.com
