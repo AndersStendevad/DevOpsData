@@ -48,7 +48,6 @@
 \usepackage[utf8]{inputenc} %Reconoce algunos símbolos
 \usepackage{lmodern} %optimiza algunas fuentes
 \usepackage{graphicx}
-\graphicspath{ {figures/} }
 \usepackage{hyperref} % Uso de links
  \hypersetup{
   colorlinks=true,
@@ -111,7 +110,7 @@ One last note that was especially important for this project was the use of dock
 At the core of our application there are two Django apps interfacing with a single source-of-truth, a Postgres relational database. One of the Django apps is for the web frontend for regular users and the other is for the API to provide access for developers. The rest of the architecture surrounding the core is to enable the maintenance, development and evolution of the project in line with the devops mindset. Docker, docker-compose and docker swarm were utilized for virtualization and orchestration, Prometheus and grafana for monitoring and the ELK stack for logging. 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=8cm]{structure}
+    \includegraphics[width=8cm]{figures/structure.png}
     \caption{Application / architecture overview}
     \label{fig:structure}
 \end{figure}
@@ -171,7 +170,7 @@ To monitor the system we use database queries (Inside Grafana) and \href{https:/
 \href{https://grafana.com/}{Grafana} is an analytics visualization platform that can show dashboards of metrics provided by a monitoring tool such as Prometheus. Our dashboard  can be seen in \ref{fig:dash}. It is divided in two sections: one for technical purposes and one for business purposes. The technical part includes up-time, CPU load, memory usage and disk usage. This gives us an overview of whether maintenance is needed at a glance. The business part includes number of users, number posts and number of followers. This allows us to get a better overview of our product's popularity and makes us better understand how our users use the service.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=12cm]{Dash}
+    \includegraphics[width=12cm]{figures/Dash.png}
     \caption{Grafana dashboard}
     \label{fig:dash}
 \end{figure}
@@ -213,7 +212,7 @@ We use Docker Swarm to orchestrate the containers and allows us to seamlessly sc
 
 \begin{figure}[]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{infrastructure}}
+    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{figures/infrastructure.png}}
     \caption{Deployment overview}
     \label{fig:deployment_overview}
 \end{figure}
