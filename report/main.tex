@@ -107,13 +107,13 @@ One last note that was especially important for this project was the use of dock
 %     \item All dependencies of your ITU-MiniTwit systems on all levels of
 % \end{itemize}
 
-At the core of our application there are two Django apps interfacing with a single source-of-truth, a Postgres relational database. One of the Django apps is for the web frontend for regular users and the other is for the API to provide access for developers. The rest of the architecture surrounding the core is to enable the maintenance, development and evolution of the project in line with the devops mindset. Docker, docker-compose and docker swarm were utilized for virtualization and orchestration, Prometheus and grafana for monitoring and the ELK stack for logging. 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=8cm]{figures/structure.png}
-    \caption{Application / architecture overview}
-    \label{fig:structure}
-\end{figure}
+% At the core of our application there are two Django apps interfacing with a single source-of-truth, a Postgres relational database. One of the Django apps is for the web frontend for regular users and the other is for the API to provide access for developers. The rest of the architecture surrounding the core is to enable the maintenance, development and evolution of the project in line with the devops mindset. Docker, docker-compose and docker swarm were utilized for virtualization and orchestration, Prometheus and grafana for monitoring and the ELK stack for logging. 
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=8cm]{figures/structure.png}
+%     \caption{Application / architecture overview}
+%     \label{fig:structure}
+% \end{figure}
 
 \subsection{Virtualisation}
 It was essential for the project to utilize some sort of virtualisation. Not only would it make the application portable, but also make it run on any platform. Below we will discuss why we chose Docker for this instead of other approaches like Vagrant. 
@@ -191,12 +191,14 @@ We were keen on keeping a team of equal voices, however if one of us had some pr
 We maintained two repositories one for the CI part of the pipeline and for the CD. In the repository for CI we have contained the application code and the parts necessary for local development. Furthermore GitHub actions for testing and building our Docker images, pushing them to the container registry. The deployment repository contained the configuration file needed for the deploying to the test and the production server.
 \\\\
 Working with development in git, we followed a strategy where the main branch was the bases of releases (first, weekly, later automatic releases). We avoided committing directly to the main branch, instead merging development into main via a pull request. We usually agreed on these merges at meeting as they had a major impact on the overall project. All features and fixes were developed on feature-branches which occasionally had sub-branches themselves when needed. Some of these sub-branches functioned as experiments and didn't lead anywhere, while others were merged back into the original feature branch which in turn was merged into the development branch as soon as the feature was complete. See Figure \ref{fig:branching}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=12cm]{branching.png}
-    \caption{Branching strategy}
-    \label{fig:branching}
-\end{figure}
+
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=12cm]{branching.png}
+%     \caption{Branching strategy}
+%     \label{fig:branching}
+% \end{figure}
+
 \subsection{Deployment and production CD}
 Our deployment GitHub action started with installing requirements, then we tested our system both with scripts and static code analysis one last time, afterwards we built and pushed the images to docker hub, finally we deployed these images to our server /swarm using a freshly pulled docker-compose file from our deployment repository. This docker compose file made sure that we started the database first, then set up monitoring, then started our apps (Api, then Web), and finally set up logging. The CD process ended with creating a new release.
 \\
@@ -210,12 +212,12 @@ Firstly, we use a Digital Ocean floating IP which is a a flexible IP address tha
 \noindent
 We use Docker Swarm to orchestrate the containers and allows us to seamlessly scale horizontally without having to manage “physical” machines or route traffic. A swarm consists of manager and worker nodes. Contrary to other distributed systems, the manager nodes don’t souly manage the incoming traffic. Instead, all nodes in the swarm are a part of a “routing mesh” which keeps track of which services run on all nodes. That way, incoming traffic to any node will automatically get routed to an instance of the service, even if it’s not running on the actual node. Thus, the routing mesh also acts as a simple load balancer, spreading request to the “least busy” instance of a service.
 
-\begin{figure}[]
-    \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{figures/infrastructure.png}}
-    \caption{Deployment overview}
-    \label{fig:deployment_overview}
-\end{figure}
+% \begin{figure}[]
+%     \centering
+%     \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{figures/infrastructure.png}}
+%     \caption{Deployment overview}
+%     \label{fig:deployment_overview}
+% \end{figure}
 
 % \\\\
 % For example, how did you use issues, Kanban boards, etc. to organize open tasks
