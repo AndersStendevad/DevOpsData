@@ -10,8 +10,18 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
+
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          working_directory: ./report
-          root_file: main.tex
+          root_file: report/main.tex
+
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: 'main'
+          message: 'publish report.pdf'
+          force: 'true'
+          directory: ./report
+          author_email: edibegovic@itu.dk
