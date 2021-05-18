@@ -9,6 +9,6 @@ jobs:
   -name: Build LaTeX report
   runs-on: ubuntu-latest
   uses: xu-cheng/latex-action@v2
-  with:
   working_directory: ./report/
+  with:
     root_file: main.tex
