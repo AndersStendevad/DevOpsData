@@ -16,7 +16,7 @@ jobs:
         with:
           root_file: main.tex
           working_directory: report/
-          args: -job-name=report
+          args: -jobname=report
 
       - name: Commit & Push changes
         uses: actions-js/push@master
