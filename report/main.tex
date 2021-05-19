@@ -3,7 +3,9 @@
 % Head down to where it says "Start here"
 % --------------------------------------------------------------
  
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
+
+\input{structure.tex}
 
 \renewcommand{\thesubsection}{\thesection.\alph{subsection}}
 \usepackage{todonotes}
@@ -14,6 +16,7 @@
 \usepackage{listings}[language=C]
 \usepackage{xcolor}
 \usepackage{float}
+
 
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -40,7 +43,7 @@
     tabsize=2
 }
 
-%\lstset{style=mystyle}
+\lstset{style=mystyle}
 
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage[english]{babel} %Castellanización
@@ -48,6 +51,7 @@
 \usepackage[utf8]{inputenc} %Reconoce algunos símbolos
 \usepackage{lmodern} %optimiza algunas fuentes
 \usepackage{graphicx}
+\graphicspath{ {images/} }
 \usepackage{hyperref} % Uso de links
  \hypersetup{
   colorlinks=true,
@@ -75,18 +79,17 @@ Høgni Jacobsen (hoja@itu.dk)\\
 \maketitle
 \clearpage
 \section{Introduction}
-MiniTwit is a Twitter clone originally written by ITU researchers. Since then, the web application have been neglected, with no maintenance being done. This changed in 2021. In the name of DevOps a handful of students decided to update it. 
+MiniTwit is a Twitter clone originally written by ITU researchers. For some time, the web application has been neglected, with no maintenance being done. This changed in 2021. In the name of DevOps a handful of students decided to update it. 
 \\\\
-The following sections will cover: the System's Perspective -including the choices for the technology used in the project, then the Process' perspective -including the way the team worked together and the how the decisions were made. The Lessons Learned Perspective includes our reflections on the project and the elements that we would have done differently.
+The following three sections will be covered: the System's Perspective (choices for the technology used in the project), Process' perspective (the way the team worked together and the how the decisions were made) and the Lessons Learned Perspective (our reflections on the project and the elements that we would have done differently).
 
 \section{System's Perspective}
-This section will cover the technology details of our system. Only the most significant elements will be covered. This includes our considerations when creating maintainable software. An explanation of the Minitwit application, and some of the most prominent technologies used in the project. Namely Docker, Django, the CI/CD and our static Code Analysis.   
+This section will cover the technical details of our system. We will discuss the considerations when creating maintainable software and explain the MiniTwit application and some of the most prominent technologies used in the project. Namely, Docker, Django, the CI/CD (Continuous integration and continuous delivery) chain, and our static Code Analysis.
 
 \subsection{Creating maintainable software}
-Before we cover the details of our project, we wish to stress the importance of a DevOps mindset. Code should never be static and should always be up to date. But as a developer with limited resources, you simply cannot be the only maintainer of an entire software stack. Therefore you should always strive to create software that can be given to new people without worry. This includes automating as many things as possible. At worst give new people an insight into how a piece of software should work. \\\\
-This also means adopting a high standard of testing and adding doc strings to code. Ultimately a piece of software is only finished when the code runs, the tests pass and the documentation is clear. This is especially important in DevOps.
+In a DevOps mindset, code should never be static and should always be up to date. One cannot be the only maintainer of an entire software stack. Therefore one should always strive to create software that can be forwarded to a new team without worry. This includes automation and giving an insight into how a piece of software should work (documentation). The target platform and dependencies should also be documented. It also means adopting a high standard of testing. Ultimately, a piece of software is only considered functioning when the code runs, the tests pass, and the documentation is clear. This is especially important in DevOps.
 \\\\
-One last note that was especially important for this project was the use of docker files for testing and deployments. When you create a DockerFile, you not only automate the build steps of the application. You also document the target platform and the dependencies. This comes almost entirely for free, which makes it even more valuable to adopt Docker. 
+The use of DockerFiles was especially important for this project (testing and deployments) as build steps are automated. This comes almost entirely for free, which makes it even more valuable to adopt Docker. 
 
 %\subsection{What we need to do}
 %A description and illustration of the:
@@ -107,147 +110,172 @@ One last note that was especially important for this project was the use of dock
 %     \item All dependencies of your ITU-MiniTwit systems on all levels of
 % \end{itemize}
 
-% At the core of our application there are two Django apps interfacing with a single source-of-truth, a Postgres relational database. One of the Django apps is for the web frontend for regular users and the other is for the API to provide access for developers. The rest of the architecture surrounding the core is to enable the maintenance, development and evolution of the project in line with the devops mindset. Docker, docker-compose and docker swarm were utilized for virtualization and orchestration, Prometheus and grafana for monitoring and the ELK stack for logging. 
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width=8cm]{figures/structure.png}
-%     \caption{Application / architecture overview}
-%     \label{fig:structure}
-% \end{figure}
-
+At the core of our application, there are two Django applications interfacing with a single source-of-truth, a Postgres relational database. One of the Django applications is the web front-end for regular users, the other an API that provides access for developers. The rest of the architecture surrounding the core is to enable the maintenance, development, and evolution of the project in line with the DevOps mindset. Docker, Docker-compose, and Docker Swarm were utilized for virtualization and orchestration, Prometheus and Grafana for monitoring, and the ELK stack for logging. In figure \ref{fig:structure} there is a high-level overview of the architecture of our system.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=16cm]{figures/structure.png}
+    \caption{Application / Architecture overview. The components of the system and their connections. }
+    \label{fig:structure}
+\end{figure}
+\ \\ \\ \\
 \subsection{Virtualisation}
-It was essential for the project to utilize some sort of virtualisation. Not only would it make the application portable, but also make it run on any platform. Below we will discuss why we chose Docker for this instead of other approaches like Vagrant. 
+It was essential for the project to utilize virtualization. Not only would it make the application portable, but it also allows it to run on any platform. Below we will discuss why we chose Docker for virtualization instead of other technologies such as Vagrant. 
 
 \subsubsection{Docker}
-At the core of Docker is the Open Container Initiative\footnote{\url{https://opencontainers.org/}}. This means that any docker images adheres to a spec determined by domain experts. This means that running an application with docker is not only cross compatible today, but also tomorrow. Even if another container orchestrate comes around. 
+At the core of Docker is the Open Container Initiative\footnote{\url{https://opencontainers.org/}}. This means that Docker images adhere to specifications determined by domain experts, and thus running an application with Docker is not only cross-compatible today but also tomorrow.
 \\\\
-In this project we decided to have every part of the project in its own container and image. This was without much overhead or extra developer time. The advantages were that the applications ran more secure, without elevated user rights. That the networking between containers were locked down. Making them more secure. All of this was orchestrated with docker compose. Making the DockerFiles simpler and more secure.   
+We decided to have all parts of the project in their own containers and images. The advantage of this was reduced development overhead and added security. The containers run without elevated user rights as the networking between containers is locked down. All of this was orchestrated with Docker compose, making the DockerFiles.   
+\ \\
 
-\subsubsection{Not Vagrant}
-The other option for a virtualisation stack was Vagrant. We opted not to go for this because our application consisted of many small sub components. Had we had a more complicated setup, with many connections between sub components. Then Vagrant would had been easier. It would also make it easier to deploy code to a fresh server. The overhead of developing on a Hypervisor would also not had been nice. For development docker is just easier. 
+% \subsubsection{Not Vagrant}
+The other option for a virtualization stack was Vagrant. We opted not to go for this because our application consisted of many small sub-components. Had we had a more complicated setup, with many connections between sub-components, Vagrant would have been easier. It also would have made it easier to deploy code to a new server. The overhead of developing on a Hypervisor would have made things complicated. For us, development in Docker was easier. 
+\ \\ \\
+
 \subsection{Core Technology stack}
 
 \subsubsection{Django}
-\href{https://www.Djangoproject.com/}{Django} is a Python library for web development. We have chosen this because we all had experience with Python and Django is the de facto tool for full-stack python web development as it integrates well with the underlying database system and has multiple related tools that facilitate an ecosystem around web based applications unlike for example the Python based Flask. 
+\href{https://www.Djangoproject.com/}{Django} is a Python library for web development. We chose this as our team had experience with Python, and Django is the "de facto" tool for full-stack Python web development. Django integrates well with the underlying database system and has multiple related tools that facilitate an ecosystem around web-based applications. 
 
-Both our web and API interface is built on Django. API orchestrates interaction with the database such as initial creation of tables, but both interacts with the database directly during production.
+Both our web and API interface is built on Django. The API orchestrates interactions with the database such as initial creation of tables, but both web and the API interact with the database directly during production.
 
 \subsubsection{Postgres}
-\href{https://www.postgresql.org/}{PostgreSQL} is one of the most prevalent relational database systems. It is open source and has a nice integration with Django, therefore it was the straightforward choice to store relational data, it is also a tool that the team had as a skill. It is also faster than SQLite, the original database system.
+\href{https://www.postgresql.org/}{PostgreSQL} is one of the most prevalent relational database systems. It is open source and is nicely integrated with Django. Therefore it was the straightforward choice to store relational data. Postgres is also faster and scalable than SQLite, the original database system.
 
 
 \subsection{CI-CD pipeline}
-We have decided to use GitHub actions to orchestrate continuous integration and development. We have found that this technology stack works inherently well with development using GitHub which speeds up development in general. (Trying to make it work with Travis or Jenkins for instance, involved connecting multiple technologies, which brought some unforeseen issues.) GitHub enforced a DevOps-thinking, that proved useful when we needed to integrate more technologies on top of our existing stack. For example we were able to use a marketplace action for pushing images to docker hub. Saving development time.
+We decided to use GitHub actions to orchestrate continuous integration and development. We have found that this technology works inherently well with development using GitHub, generally speeding up development. GitHub enforced a DevOps-thinking that proved helpful when we needed to integrate more technologies on top of our existing stack. For example, we could use a marketplace action for pushing images to Docker Hub, which saved us development time.
 
-We have implemented two "actions". One functions as quality assurance. Every time we merge a fix-branch/feature branch into the development branch we run some test scripts and perform linting. This script also "deploys" our project to a "development server", set up as a clone of the production environment for testing without the risk failure or downtime on the real server (where the simulator was sending data).
+\ \\
+\noindent
+We have implemented two pipelines. One functions as quality assurance (QA). Every time a fix/feature branch is merged into the development branch, we run some test scripts and perform linting. This script also deploys our project to a development environment. This being set up as a clone of the production environment, such that the system can be tested without the risk of failure or downtime on the production server.
 
-The second "action" is used for deployment. In essence it works the same way, but it is triggered when we push code to the main branch and it deploys our code to the real server. This step also includes creating a new release.
+\ \\
+\noindent
+The second action is used for deployment. In essence, it works the same way but is only triggered when we push code to the main branch, and it deploys our code to the production server. This step also includes creating a new release.
+
+\ \\
+\noindent
+In figure \ref{fig:cicd_overview} we can see an overview of the CI/CD pipeline.
+
+\begin{figure}[]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{figures/cicd_workflow.png}}
+    \caption{CI/CD overview}
+    \label{fig:cicd_overview}
+\end{figure}
+
+\ \\ \\ \\ \\ \\ \\ \\
 
 \subsection{Linting}
-For linting we used \href{https://github.com/psf/black}{Black} for Python. Helping us to keep coding styles concise, by automatically formatting code. Black is also run in the QA step in GitHub actions.
+For linting we used \href{https://github.com/psf/black}{Black} for Python, helping us to keep coding styles concise. Consistent code is easier to refactor, automate, test, and read.
 
 \subsection{Static Code Analysis}
-We are using \href{https://xenon.readthedocs.io/en/stable/}{Xenon} for static code analysis. Xenon is a python tool that can asses code complexity. It is based on Radon, a tool that makes metrics based on the code's 
+We are using \href{https://xenon.readthedocs.io/en/stable/}{Xenon} for static code analysis. Xenon is a Python tool that can assess code complexity. It is based on Radon, a tool that makes metrics based on the code's 
 \href{https://radon.readthedocs.io/en/latest/intro.html}{cyclomatic complexity}. 
 
-Xenon labels code files from A-F (A being the best), and our code have been passing grade B in \textit{block complexity, average complexity, modules complexity} -a threshold we have set for quality assessment, but our code right now passes grade A in modules complexity and average complexity.
+Xenon labels code files from A-F (A being the best). Our code passed with a B grade in \textit{block complexity, average complexity, modules complexity} and a grade A in module complexity and average complexity.
 
 \subsection{License}
-After careful inspection of our dependencies' licenses we have decided to use GPL 3 license. This is largely because one of our dependencies have the same license which doesn't allow us to use a more open license such as MIT, which we would otherwise have preferred.
+After careful inspection of our dependencies' licenses, we have decided to use the GPL3 license. This is mostly because one of our dependencies (psycopg2-binary) uses the same license which doesn't allow us to use to use a more open license such as MIT.
 
+\subsection{Deployment}
+As we were already using Docker containers, and as an extension, Docker compose, we chose to use Docker Swarm for orchestrating our services, as additional configuration is minimal. 
+While Docker Swarm is great for horizontal scaling of state-less services (through the addition of multiple nodes), having multiple instances of databases to persist data can be troubling as race conditions can easily occur. 
+\noindent
+We therefore used DigitalOcean Droplets (acting as physical machines) for hosting our worker/manager nodes for the Swarm as well as a managed relational database running Postgres.
 
 \section{Process' perspective}
-The following section will cover the process elements of DevOps. This means the processes used to automate elements of development and the way the team, GitHub and communication was setup. When creating an optimal process it is important to adopt the right policies and ideas. Policies and ideas that makes the project easier to work with, easier to maintain and makes handover seamless. Both from the perspective of the Developer, but also the other stakeholders. When you adopt the right process, you end up having the right discussions, which is arguably the most important step in creating good software.
+The following section will cover the process elements of DevOps. This means the processes used to automate elements of development and the way the team, GitHub, and communication were set up. When creating an optimal process, it is important to adopt the right policies and ideas. Policies and ideas that make the project easier to work with, maintain, and handover — both from the perspective of the Developer, but also the other stakeholders.
 
 \subsection{Logging and monitoring of the application}
-The addition of logging and monitoring for modern software is crucial in detecting and identifying the events occurring with the system. When proper logging is implemented it is quite easier to react to errors, exceptions happening. On one hand, with logging we can keep a tab of vast amount of events and with the help of the ELK stack all these events was transformed to be consumable. On the other hand, with monitoring we can zoom in on events in a more focused, maybe a bit more business-minded way and even create triggers for when outliers occur. It is especially important for when you handover an application. Logging makes it possible to show a newcomer how the application is used.
+The addition of logging and monitoring is crucial for detecting and identifying the events occurring, and that has occurred in the system. When proper logging is implemented, it is easier to fix errors, as with logging we can keep a tab of a vast amount of events, and with the help of the ELK (Elasticsearch, Logstash, and Kibana) stack, all these events are transformed to be consumable. Logging also makes it possible to show a newcomer how the application is used. With monitoring we can zoom in on events in a more focused and business-minded way.
 \\\\
-To monitor the system we use database queries (Inside Grafana) and \href{https://github.com/giampaolo/psutil}{psutil} to pull system stats and pass them to Prometheus. We chose to monitor both business and technology related metrics. Below we cover the prominent technologies used in our logging and monitoring. All of them serve different purposes, but are all important.
+To monitor the system, we use database queries (Inside Grafana) and \href{https://github.com/giampaolo/psutil}{psutil} to pull system stats and pass them to Prometheus. We chose to monitor both business and technology-related metrics. Below we cover the prominent technologies used in our logging and monitoring.
+
 \subsubsection{Prometheus}
-\href{https://Prometheus.io/}{Prometheus} is a monitoring tool, which records events and metrics in a time-series database. We use Django-Prometheus, a library that integrates well with Django-based web applications. This monitors our Django-models (directly from the database), the health of the server (such as CPU load and memory usage), web traffic (such as http response codes) etc. We also use Prometheus\_client for monitoring additional metrics, however so far this was not necessary. 
+\href{https://Prometheus.io/}{Prometheus} is a monitoring tool, which records events and metrics in a time-series database. We use Django-Prometheus, a library that integrates well with Django-based web applications. This monitors our Django models (directly from the database), the health of the server (such as CPU load and memory usage), web traffic (such as http response codes) etc. We also use Prometheus\_client for monitoring additional metrics. However, so far this was not necessary. 
 
 \subsubsection{Grafana}
-\href{https://grafana.com/}{Grafana} is an analytics visualization platform that can show dashboards of metrics provided by a monitoring tool such as Prometheus. Our dashboard  can be seen in \ref{fig:dash}. It is divided in two sections: one for technical purposes and one for business purposes. The technical part includes up-time, CPU load, memory usage and disk usage. This gives us an overview of whether maintenance is needed at a glance. The business part includes number of users, number posts and number of followers. This allows us to get a better overview of our product's popularity and makes us better understand how our users use the service.
+\href{https://grafana.com/}{Grafana} is an analytics visualization platform that displays dashboards of metrics provided by a monitoring tool such as Prometheus. Our dashboard  can be seen in \ref{fig:dash}. It is divided into two sections: one for technical purposes and one for business purposes. The technical part includes uptime, CPU load, memory usage, and disk usage. This gives us an overview of whether maintenance is needed at a glance. The business part includes the number of users, number of posts, and number of followers. This allows us to get a better overview of our product's popularity and makes us better understand how our users use the service.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=12cm]{figures/Dash.png}
+    \includegraphics[width=16cm]{figures/dashboard.png}
     \caption{Grafana dashboard}
     \label{fig:dash}
 \end{figure}
+
 \subsubsection{Filebeat}
-\href{https://www.elastic.co/beats/filebeat}{Filebeat} is a lightweight shipper for logs. Its function is to collect and centralize logs from given locations on the server and forward them to the specified target, ElasticSearch in our case. Using a Filebeat container was quite seamless in our setup, the configuration is about specifying where the log files are dropped and in what form Filebeat should forward them. 
+\href{https://www.elastic.co/beats/filebeat}{Filebeat} is a lightweight shipper for logs. Its function is to collect and centralize logs from given locations on the server and forward them to the specified target, ElasticSearch in our case. Using a Filebeat container was seamless in our setup. The configuration is about specifying where the log files are dropped and in what form Filebeat should forward them. 
 
 \subsubsection{Elasticsearch}
-\href{https://www.elastic.co/elasticsearch/}{ElasticSearch} is a multipurpose RESTful search and analytics engine with its fast search as the core feature. It is part of the ELK stack and the software allows for several types of searches (structured, unstructured, geo, metric). We have used an ElasticSearch to collect and structure the logs collected by Filebeat and allow quick searching for the next tool in our logging pipeline.
+\href{https://www.elastic.co/elasticsearch/}{ElasticSearch} is a multipurpose RESTful search and analytics engine with fast searching as the core feature. It is part of the ELK stack, and the software allows for several types of searches (structured, unstructured, geo, and metric). We have used an ElasticSearch to collect and structure the logs collected by Filebeat and allows for fast searching for the next tool in our logging pipeline.
 
 \subsubsection{Kibana}
 \href{https://www.elastic.co/kibana}{Kibana} is a flexible visualization tool that is the third element of the logging pipeline. Kibana transforms the logs structured by ElasticSearch into a more human-consumable format. Various visualizations can be utilized to make the logs more understandable and clearer.
+
 \subsection{GitHub for collaboration}
-
-As a developer team we mainly relied on having weekly meetings and discussing what product increments should be made. Afterwards we have been working on the new features in small teams or individually. To further improve on the organization of tasks we made use of GitHub issues, allowing for easy integration with the concrete implementation through pull requests.
+As a development team, we mainly relied on having weekly meetings and discussing what product increments should be made. Afterwards we have been working on the new features in small teams or individually. To further improve on the organization of tasks, we made use of GitHub issues, allowing for easy integration with the concrete implementation through pull requests.
 \\\\
-We were keen on keeping a team of equal voices, however if one of us had some previous experience with some of technologies we were to integrate into our app, that voice and the arguments with it carried naturally more weight. Also, in case a person wanted to delve into some solutions more or experiment with alternative solutions for given problem, it was encouraged. 
+We were keen on keeping a team of equal voices. However, if one of us had some previous experience with some technology to be implemented, then their voice and the arguments naturally carried more weight. Also, in case a person wanted to delve into some solutions more or experiment with alternative solutions for a given problem, it was encouraged. 
 \\\\
-We maintained two repositories one for the CI part of the pipeline and for the CD. In the repository for CI we have contained the application code and the parts necessary for local development. Furthermore GitHub actions for testing and building our Docker images, pushing them to the container registry. The deployment repository contained the configuration file needed for the deploying to the test and the production server.
+We maintained two repositories, one for the CI part of the pipeline and for the CD. In the repository for CI we have contained the application code and the parts necessary for local development. Furthermore, GitHub actions for testing and building our Docker images, pushing them to the container registry. The deployment repository contained the configuration file needed for deploying to the test and the production server.
 \\\\
-Working with development in git, we followed a strategy where the main branch was the bases of releases (first, weekly, later automatic releases). We avoided committing directly to the main branch, instead merging development into main via a pull request. We usually agreed on these merges at meeting as they had a major impact on the overall project. All features and fixes were developed on feature-branches which occasionally had sub-branches themselves when needed. Some of these sub-branches functioned as experiments and didn't lead anywhere, while others were merged back into the original feature branch which in turn was merged into the development branch as soon as the feature was complete. See Figure \ref{fig:branching}
-
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width=12cm]{branching.png}
-%     \caption{Branching strategy}
-%     \label{fig:branching}
-% \end{figure}
-
+Working with development in GitHub, we followed a strategy where the main branch was the base of releases (first, weekly, later automatic releases). We avoided committing directly to the main branch, instead merging development into main via a pull request. We usually agreed on these merges at a meeting as they had a significant impact on the overall project. All features and fixes were developed on feature branches which occasionally had sub-branches themselves when needed. Some of these sub-branches functioned as experiments and didn't lead anywhere. In contrast, others were merged back into the original feature branch, which was merged into the development branch as soon as the feature was complete. See Figure \ref{fig:branching}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=12cm]{figures/branching.png}
+    \caption{Branching strategy}
+    \label{fig:branching}
+\end{figure}
 \subsection{Deployment and production CD}
-Our deployment GitHub action started with installing requirements, then we tested our system both with scripts and static code analysis one last time, afterwards we built and pushed the images to docker hub, finally we deployed these images to our server /swarm using a freshly pulled docker-compose file from our deployment repository. This docker compose file made sure that we started the database first, then set up monitoring, then started our apps (Api, then Web), and finally set up logging. The CD process ended with creating a new release.
+Our GitHub action for deployment started with installing requirements, then testing our system both with scripts and static code analysis one last time, afterwards we built and pushed the images to Docker Hub. Finally, an update command is sent to the swarm, which pulls the images. This Docker compose file made sure that we started the database first, set up monitoring, then started our apps (API, then Web), and finally set up logging. The CD process ended with creating a new release.
 \\
 
 \subsection{Handling traffic}
-% Talk about the load balacing and the different steps. Floating IP, Swarm and Enigine X.
 There are three layers to handling incoming traffic to our system. 
-Firstly, we use a Digital Ocean floating IP which is a a flexible IP address that can be instantly mapped to any Digital Ocean service. A great advantage is the ability to experiment with different types of hardware without wait the 6-48 hours for the DNS to update the endpoint of our domain name. 
+Firstly, we use a DigitalOcean floating IP (Internet Protocol address) which is a flexible IP address that can be instantly mapped to any DigitalOcean service. A great advantage is the ability to experiment with different types of hardware without waiting 6-48 hours for the DNS (Domain Name System) to update the endpoint of our domain name. 
 \ \\
 
 \noindent
-We use Docker Swarm to orchestrate the containers and allows us to seamlessly scale horizontally without having to manage “physical” machines or route traffic. A swarm consists of manager and worker nodes. Contrary to other distributed systems, the manager nodes don’t souly manage the incoming traffic. Instead, all nodes in the swarm are a part of a “routing mesh” which keeps track of which services run on all nodes. That way, incoming traffic to any node will automatically get routed to an instance of the service, even if it’s not running on the actual node. Thus, the routing mesh also acts as a simple load balancer, spreading request to the “least busy” instance of a service.
+We use Docker Swarm to orchestrate the containers and allows us to seamlessly scale horizontally without having to manage "physical" machines or route traffic. Contrary to other distributed systems, the manager nodes don't only manage the incoming traffic. Instead, all nodes in the swarm are a part of a "routing mesh" which keeps track of which services run on all nodes. That way, incoming traffic to any node will automatically get routed to an instance of the service, even if it's not running on the actual node. Thus, the routing mesh also acts as a simple load balancer, spreading requests to the "least busy" instance of a service.
+\ \\
 
-% \begin{figure}[]
-%     \centering
-%     \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{figures/infrastructure.png}}
-%     \caption{Deployment overview}
-%     \label{fig:deployment_overview}
-% \end{figure}
+Although the routing mesh provides load-balancing functionality, we further have an NGINX service running to route requests to the respective services. We went with NGINX due to its high configurability, e.g. allowing us to set up rules for sub domains. 
 
-% \\\\
-% For example, how did you use issues, Kanban boards, etc. to organize open tasks
-%     [GERGO]
-    
-% \\\\
+\begin{figure}[]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{figures/infrastructure.png}}
+    \caption{Infrastructure overview}
+    \label{fig:deployment_overview}
+\end{figure}
+
 \section{Lessons Learned Perspective}
-This last section will conclude this DevOps project, by highlighting the lessons learned in the project. In an iterative process is a good thing to make mistakes. It is preferable from a learning perspective. This requires that mistakes are analysed and discussed. Otherwise a team might make the same mistake more than once. Even on different parts of the projects. In this section we highlight our venture into Kubernetes as a mistake. In this section we cover issues we had moving to Django, Kubernetes and its drawbacks, issues with the multi-App Django and security problems.
-\subsection{Issues moving to Django}
-The Old MiniTwit system was built on Python 2 and Flask. To migrate from Python 2 to 3 we used the Python module \textit{2to3}. This did not work perfectly and we had to manually change some code elements. Flask required some more work to migrate from. To migrate from Flask we had to get an overview of the system in Flask and then we could then build the Django application up section by section. We ran into some issues due to use having two team working on different parts of the refactoring. One working in the API the other on the web application. This issue was quickly fixed by a consultation and a decision as to how to continue.
+This last section will conclude this DevOps project by highlighting the lessons learned in the project. In an iterative process, it is good to make mistakes as it is preferable from a learning perspective. This requires that mistakes are analyzed and discussed. Otherwise, a team might make the same mistake more than once. In this section, we highlight our venture into Kubernetes as a mistake and cover issues we had with Django (moving to), multi-App Django, and security.
+
 \subsection{Kubernetes and its drawbacks}
-During our final phases of development, we decided to adopt Kubernetes as our platform. We made this decision on the promise of rollover deployments, load balancing, centralised logging and horizontal scaling. This move seemed straight forward, especially after we had containerised the entire stack of the application and supporting layers. What we would gain is kind of the endgame of DevOps. Having infrastructure as code and deployments without having to rely on an SSH connection even for automated deployments. With all the promises of Kubernetes it might be confusing as to why we ended up not using Kubernetes in the end.
+During our final phases of development, we decided to adopt Kubernetes as our platform. We decided on the promise of rollover deployments, load balancing, centralized logging, and horizontal scaling. This move seemed straightforward, especially after we had containerized the entire stack of the application and supporting layers. Having infrastructure as code and deployments without having to rely on an SSH connection even for automated deployments.
 \\\\
-While every component worked fine internally and individually, we had problems configuring the incoming connections and putting at all together. You have to adhear to very strict and secure configurations with the network and load balancing when yous setup the cluster. This is Because Kubernetes is configured for security between layers and containers, with specific containers for handling and diverting connections. Therefore opening up a connection to the outside world is simply not possible with a one line command, like you would do on a normal server.
+While every component worked fine internally and individually, we had problems configuring the incoming connections and putting at all together. You have to adhere to very strict and secure configurations with the network and load balancing when setting up the cluster. This is because Kubernetes is configured for security between layers and containers, with specific containers for handling and diverting connections. Therefore opening up a connection to the outside world is not possible with a one-line command, like you would do on a typical server.
 \\\\
-Even though every container has its own internal cluster IP, you cannot just use that IP to connect to a container long term. Cluster IPs are like workplaces with flowing seating. Today your API might have have IP A, but tomorrow it might be IP Z. To solve this problem you have labels on containers and other containers with selectors. This makes it possible for the selectors to figure out the cluster IPs of containers with the right labels. 
+Even though every container has its own internal cluster IP, you cannot just use that IP to connect to a container long term. Cluster IPs are like workplaces with flowing seating. Today your API might have IP A, but tomorrow it might be IP Z. To solve this problem, you have labels on containers and other containers with selectors. This makes it possible for the selectors to figure out the cluster IPs of containers with the correct labels. 
 \\\\
-The takeaway is that you cannot hack your way to a small deployment of Kubernetes. In the end the only way to configure Kubernetes is to have Different layers with Pods, Deployments, Services, Loadbalancers and Namespaces. And this is without the complexity of Floating IPs and the setup that makes that work with loadbalancers. This is typically done by the cloud provider. And for our project that would mean that we either needed to pay 10\$ a month for each External IP, or that we need to configure an Ingress, that needed to work with the Kubernetes setup. This ultimatly was the final draw for us before we decided to stop our venture into Kubernetes.   
+The takeaway is that you cannot hack your way to a small deployment of Kubernetes. In the end, the only way to configure Kubernetes is to have different layers with pods, deployments, services, load balancers, and namespaces. And this is without the complexity of Floating IPs and the setup that makes that work with load balancers. This is typically done by the cloud provider. And for our project, that would mean that we either needed to pay 10\$ a month for each External IP or that we need to configure an Ingress that needed to work with the Kubernetes setup. This ultimately was the final straw for us before we decided to stop our venture into Kubernetes.   
+
+\subsection{Issues moving to Django}
+The Old MiniTwit system was built on Python 2 and Flask. To migrate from Python 2 to 3 we used the Python module \href{https://docs.python.org/3/library/2to3.html}{2to3}. This did not work perfectly, and we had to change some code elements manually. Flask required some more work to migrate away from. To migrate from Flask we had to get an overview of the system in Flask and then we could then build the Django application up section by section. We ran into some issues due to us having two teams working on different parts of the refactoring. One working in the API the other on the web application. This issue was quickly fixed by consultation and a decision as to how to continue.
 
 \subsection{Multi-App Django}
 
-The system was supposed to work such that API is a back-end for Web as well as a standalone application interface. Unfortunately, achieving this with a Django-based infrastructure was not straightforward, and we ended with duplicates of configuration files and duplicates of system logic. We have solved the problem of inconsistent migrations in the database that the mirrored applications caused with appointing API as the orchestrator of database changes. This solution worked seamlessly when we started the simulation, but it can be troublesome to restart. In the future we would like to investigate whether such a two-application two-interfaces one-database system can be solved with less duplication in a Django-based stack.
+The system was supposed to work such that API is a back-end for Web and a standalone application interface. Unfortunately, achieving this with a Django-based infrastructure was not straightforward, and we ended with duplicates of configuration files and duplicates of system logic. We have solved the problem of inconsistent migrations in the database that the mirrored applications caused by appointing API as the orchestrator of database changes. This solution worked seamlessly when we started the simulation, but it can be troublesome to restart. In the future, we would like to investigate whether such a two-application two-interfaces one-database system can be solved with less duplication in a Django-based stack.
 
 
 \subsection{Security}
-Our current system has some major security weaknesses, as we didn't quite had time to come up with an elegant solution to address these issues. The biggest shortcoming of our system is the passwords stored in plain text. This may be mitigated with using environment variables, which are stored as GitHub secrets. This comes with the added complexity of transferring the secrets to the target environment, which can potentially be done via GitHub actions. 
+Our current system has some major security weaknesses, as we didn't have time to come up with an elegant solution to address these issues. The biggest shortcoming of our system is the passwords are stored in plain text. This may be mitigated by using environment variables, which are stored as GitHub secrets. This comes with the added complexity of transferring the secrets to the target environment, which can potentially be done via GitHub actions. 
 \\\\
-However, we would have preferred to use the in-build functionality of handling sensitive variables via a dedicated security system such as the one that comes with the Kubernetes stack as to have a better overview of these variables, but we have hit some walls with using Kubernetes and this plan fall through with it (see section about Kubernetes). We believe that as our system have more and more users it becomes increasingly important to address issues related to security and privacy, therefore a dedicated security system would be a better choice for handling secrets. 
+However, we would have preferred to use the in-build functionality of handling sensitive variables via a dedicated security system such as the one that comes with the Kubernetes stack, as this would give us a better overview of these variables. We believe that as our system grows, it becomes increasingly important to address issues related to security and privacy. Therefore a dedicated security system would be a better choice for handling secrets. 
 \\\\
-Using SonarCloud we can see that the system is susceptible to Cross-Site Request Forgery.
+Also, using SonarCloud we can see that the system is susceptible to Cross-Site Request Forgery.
+
 \section{Conclusion}
-In this project we show one way of maintaining the systems of the MiniTwit application. Our emphasis on good quality assurance, with automation show the importance of DevOps. We show that the process is equally as important. As it serves to create the right environment for developing good software. In the end we show with our lessons learned, that the most high tech technologies, like Kubernetes, might not be the right choice for any platform. That careful considerations are needed to determine of the pros of some strategy are better than the cons.
+In this project, we show one way of maintaining the systems of the MiniTwit application. Our emphasis on good quality assurance with automation shows the importance of DevOps. We show that the process is equally important as it serves to create the right environment for developing good software. We learned that the most high-tech technologies, like Kubernetes, might not be the right choice for any platform or team. That careful consideration are needed to determine the pros and cons of strategies.
 \end{document}
