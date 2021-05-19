@@ -3,7 +3,7 @@ name: Build LaTeX report
 
 on:
   push:
-    branches: [ report, main ]
+    branches: [ Monitoring ]
 jobs:
   build_latex:
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: 'main'
-          message: 'publish report.pdf'
+          message: 'PDF generated'
           force: 'true'
-          directory: ./report
+          directory: ./report/build
           author_email: edibegovic@gmail.com
